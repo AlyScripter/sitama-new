@@ -75,18 +75,78 @@ class HomeController extends Controller
                                     TSS.judul_final,
                                     SEKRE.dosen_nip");
 
-        $temp = [];
+        $now = Carbon::now(); // Untuk mendapatkan tanggal dan waktu saat ini
+
+        $jadwal_no_mhs_future = [];
+        $jadwal_with_mhs_future = [];
+        $jadwal_past = [];
+
         foreach ($jadwal as $row) {
-            $temp[$row->tgl_sidang][$row->sesi_nama][$row->ruangan_nama][] = [
-                'judul_final' => $row->judul_final,
-                'mahasiswa' => explode(";;", $row->mhs),
-                'pembimbing' => explode(";;", $row->pembimbing),
-                'penguji' => explode(";;", $row->penguji),
-                'sekretaris' => $row->sekre_nama,
+            $row_data = [
+                $row->judul_final,
+                implode("<br>", explode(";;", $row->mhs)),
+                implode("<br>", explode(";;", $row->pembimbing)),
+                implode("<br>", explode(";;", $row->penguji)),
+                $row->sekre_nama,
             ];
+
+            // Cek apakah tgl_sidang sudah lewat atau belum
+            if (strtotime($row->tgl_sidang) >= strtotime($now)) {
+                // Tanggal belum lewat
+                if (empty($row->mhs)) {
+                    // Tidak ada mahasiswa
+                    $jadwal_no_mhs_future[] = [
+                        'tgl_sidang' => $row->tgl_sidang,
+                        'sesi_nama' => $row->sesi_nama,
+                        'ruangan_nama' => $row->ruangan_nama,
+                        'data' => $row_data
+                    ];
+                } else {
+                    // Ada mahasiswa
+                    $jadwal_with_mhs_future[] = [
+                        'tgl_sidang' => $row->tgl_sidang,
+                        'sesi_nama' => $row->sesi_nama,
+                        'ruangan_nama' => $row->ruangan_nama,
+                        'data' => $row_data
+                    ];
+                }
+            } else {
+                // Tanggal sudah lewat
+                $jadwal_past[] = [
+                    'tgl_sidang' => $row->tgl_sidang,
+                    'sesi_nama' => $row->sesi_nama,
+                    'ruangan_nama' => $row->ruangan_nama,
+                    'data' => $row_data
+                ];
+            }
         }
 
-        // Ambil data ruangan
+        // Urutkan array berdasarkan tgl_sidang dari yang terbaru (untuk jadwal di masa depan)
+        usort($jadwal_no_mhs_future, function($a, $b) {
+            return strtotime($b['tgl_sidang']) - strtotime($a['tgl_sidang']);
+        });
+
+        usort($jadwal_with_mhs_future, function($a, $b) {
+            return strtotime($b['tgl_sidang']) - strtotime($a['tgl_sidang']);
+        });
+
+        // Urutkan array berdasarkan tgl_sidang dari yang terlama (untuk jadwal yang sudah lewat)
+        usort($jadwal_past, function($a, $b) {
+            return strtotime($b['tgl_sidang']) - strtotime($a['tgl_sidang']);
+        });
+
+        // Gabungkan jadwal: 
+        // 1. Jadwal tanpa mahasiswa dan tanggal di masa depan
+        // 2. Jadwal dengan mahasiswa dan tanggal di masa depan
+        // 3. Jadwal di masa lalu
+        $merged_jadwal = array_merge($jadwal_no_mhs_future, $jadwal_with_mhs_future, $jadwal_past);
+
+        // Susun data ke dalam array $temp sesuai tgl_sidang, sesi_nama, dan ruangan_nama
+        $temp = [];
+        foreach ($merged_jadwal as $row) {
+            $temp[$row['tgl_sidang']][$row['sesi_nama']][$row['ruangan_nama']] = $row['data'];
+        }
+
         $ruang = Ruangan::get();
 
         return response()->json([

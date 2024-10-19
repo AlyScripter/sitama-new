@@ -10,6 +10,7 @@ use App\Http\Controllers\API\DosenTa\MahasiswaBimbinganController;
 use App\Http\Controllers\API\DosenTa\UjianSidangController;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\Auth\AuthController;
+use Laravel\Sanctum\Http\Controllers\SanctumController;
 
 /*
 |--------------------------------------------------------------------------

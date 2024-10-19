@@ -12,12 +12,24 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
+        // Log the current authentication state
+        \Log::info('User Auth Check:', ['isAuthenticated' => Auth::check()]);
+
+        if (Auth::check()) {
+            return response()->json([
+                'message' => 'User is already logged in',
+                'user' => Auth::user()
+            ]);
+        }
+
         if (Auth::attempt($credentials)) {
             // If authentication passes, create a Sanctum token
             $user = Auth::user();
             $token = $user->createToken('API Token')->plainTextToken;
 
-            // Return the token in the response (no redirect, since it's an API)
+            // Log the token for debugging
+            \Log::info('User Token Created:', ['token' => $token]);
+
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
@@ -29,6 +41,8 @@ class AuthController extends Controller
             'message' => 'Invalid credentials'
         ], 401);
     }
+
+
 
     /**
      * Handle an API logout request.
