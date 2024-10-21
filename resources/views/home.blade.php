@@ -23,8 +23,12 @@
             font-size: 1.2em;
             text-shadow: 0 0 10px rgba(0, 123, 255, 0.7), 0 0 20px rgba(0, 123, 255, 0.5), 0 0 30px rgba(0, 123, 255, 0.3);
             color: #007bff;
-            /* Warna teks yang diperbarui */
             letter-spacing: 2px;
+        }
+
+        /* Style for locked sessions (gray text) */
+        .locked-session-date {
+            color: gray !important;
         }
     </style>
 @endpush
@@ -54,10 +58,14 @@
                         <div class="card-body">
                             <div id="accordion">
                                 @foreach ($jadwal as $key => $value)
+                                    @php
+                                        // Check if the session is locked
+                                        $isLocked = $key <= date('Y-m-d');
+                                    @endphp
                                     <div class="card">
                                         <div class="card-header">
                                             <h4 class="card-title w-100">
-                                                <a class="d-block w-100" data-toggle="collapse"
+                                                <a class="d-block w-100 {{ $isLocked ? 'locked-session-date' : '' }}" data-toggle="collapse"
                                                     href="#collapse{{ $key }}">
                                                     <?php
                                                     $Carbon::setLocale('id');
@@ -71,8 +79,7 @@
                                                 <table class="table table-bordered table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th rowspan="2" class="text-center" style="width: 5%">Sesi
-                                                            </th>
+                                                            <th rowspan="2" class="text-center" style="width: 5%">Sesi</th>
                                                             <th colspan="5" class="text-center">Ruang</th>
                                                         </tr>
                                                         <tr>
@@ -96,13 +103,12 @@
                                                     <tbody>
                                                         @foreach ($value as $ke => $val)
                                                             <tr>
-                                                                <td class="text-center;">{{ str_replace('Sesi ', '', $ke) }}
-                                                                </td>
+                                                                <td class="text-center;">{{ str_replace('Sesi ', '', $ke) }}</td>
                                                                 @foreach ($val as $k => $v)
                                                                     @if ($v[0] == null)
                                                                         <td style="vertical-align: middle;">
                                                                             {!! "<div class='text-center'>" .
-                                                                                ($key <= date('Y-m-d')
+                                                                                ($isLocked
                                                                                     ? '<span class="badge badge-danger">Terkunci</span>'
                                                                                     : '<span class="badge badge-success">Tersedia</span>') .
                                                                                 '</div>' !!}

@@ -400,19 +400,20 @@ class TaController extends Controller
             return redirect()->route('ta.index')->with('error', 'Nomor SK tidak ditemukan.');
         }
 
-        $pdf = new CustomPdfAdmin('P', 'mm', 'A4');
+        // $pdf = new CustomPdfAdmin('P', 'mm', 'A4');
+        $pdf = new CustomPdfAdmin('P', 'mm', [210, 330]);
 
         $pdf->AddPage();
 
-        // $imagePath = public_path('dist/img/kop_polines.png');
+        $imagePath = public_path('dist/img/kop_polines.png');
 
-        // $pdf->Image($imagePath, 10, 10, 190);
+        $pdf->Image($imagePath, 10, 10, 190);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
 
-        $pdf->Ln(37);
+        $pdf->Ln(45);
 
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->SetWidths([40, 110, 40]);
 
         $data = [
@@ -424,18 +425,18 @@ class TaController extends Controller
         $underline = [0, 1, 0];
         $pdf->Row($data, $underline);
 
-        $pdf->Ln(4);
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->Cell(0, 5, 'Ketua Jurusan Teknik Elektro memberi tugas kepada Tim Penguji Tugas Akhir berikut ini :', 0, 1);
+        $pdf->Ln(5);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, 'Ketua Jurusan Teknik Elektro memberi tugas kepada Tim Penguji Tugas Akhir berikut ini :', 0, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetWidths([10, 30, 100, 50]);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->SetWidths([10, 40, 90, 50]);
 
         $header = ['No.', 'JABATAN', 'NAMA PENGUJI', 'NIP'];
         $pdf->Row($header);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $tableData = [
-            ['1', ' Ketua Penguji', ' ' . $detailta->dosen[0]["dosen_nama"],  $detailta->dosen[0]["dosen_nip"]],
+            ['1', ' Ketua Penguji', ' ' . $detailta->dosen[0]["dosen_nama"], '198810142019031007'],
             ['2', ' Sekretaris', ' ' . $infoujian->sekretaris_nama, $infoujian->sekretaris_nip],
             ['3', ' Penguji 1', ' ' . $infoujian->penguji1_nama, $infoujian->penguji1_nip],
             ['4', ' Penguji 2', ' ' . $infoujian->penguji2_nama, $infoujian->penguji2_nip],
@@ -443,22 +444,22 @@ class TaController extends Controller
         ];
 
         foreach ($tableData as $row) {
-            $pdf->Cell(10, 5, $row[0], 1, 0, 'C');
-            $pdf->Cell(30, 5, $row[1], 1, 0, 'L');
-            $pdf->Cell(100, 5, $row[2], 1, 0, 'L');
-            $pdf->Cell(50, 5, $row[3], 1, 1, 'C');
+            $pdf->Cell(10, 7, $row[0], 1, 0, 'C');
+            $pdf->Cell(40, 7, $row[1], 1, 0, 'L');
+            $pdf->Cell(90, 7, $row[2], 1, 0, 'L');
+            $pdf->Cell(50, 7, $row[3], 1, 1, 'C');
         }
 
         $pdf->Ln(5);
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->Cell(0, 5, 'Untuk menguji mahasiswa tersebut :', 0, 1);
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, 'Untuk menguji mahasiswa tersebut :', 0, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->SetWidths([10, 90, 40, 50]);
 
         $header3 = ['No.', 'NAMA', 'NIM', 'KELAS'];
         $pdf->Row($header3);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
 
         if ($iskelompok == '1') {
             $depan_kelas = substr($detailta->mhs_nim, 5, 1);
@@ -523,21 +524,21 @@ class TaController extends Controller
         }
 
         foreach ($tableData3 as $row) {
-            $pdf->Cell(10, 5, $row[0], 1, 0, 'C');
-            $pdf->Cell(90, 5, ucwords(strtolower($row[1])), 1, 0, 'L');
-            $pdf->Cell(40, 5, $row[2], 1, 0, 'C');
-            $pdf->Cell(50, 5, $row[3], 1, 1, 'C'); // End of line
+            $pdf->Cell(10, 7, $row[0], 1, 0, 'C');
+            $pdf->Cell(90, 7, $row[1], 1, 0, 'L');
+            $pdf->Cell(40, 7, $row[2], 1, 0, 'C');
+            $pdf->Cell(50, 7, $row[3], 1, 1, 'C'); // End of line
         }
 
         $pdf->Ln(5);
-        $pdf->Cell(0, 6, 'yang didampingi Pembimbing sebagai berikut :', 0, 1);
+        $pdf->Cell(0, 10, 'yang didampingi Pembimbing sebagai berikut :', 0, 1);
 
-        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->SetWidths([10, 40, 90, 50]);
 
         $header4 = ['No.', 'JABATAN', 'NAMA PEMBIMBING', 'NIP'];
         $pdf->Row($header4);
-        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetFont('Arial', '', 12);
         $tableData4 = [
             ['1', ' ' . 'Pembimbing 1', ' ' . $detailta->dosen[0]["dosen_nama"], $detailta->dosen[0]["dosen_nip"]],
             ['2', ' ' . 'Pembimbing 2', ' ' . $detailta->dosen[1]["dosen_nama"], $detailta->dosen[1]["dosen_nip"]],
@@ -545,32 +546,32 @@ class TaController extends Controller
 
 
         foreach ($tableData4 as $row) {
-            $pdf->Cell(10, 5, $row[0], 1, 0, 'C');
-            $pdf->Cell(40, 5, $row[1], 1, 0, 'L');
-            $pdf->Cell(90, 5, $row[2], 1, 0, 'L');
-            $pdf->Cell(50, 5, $row[3], 1, 1, 'C'); // End of line
+            $pdf->Cell(10, 7, $row[0], 1, 0, 'C');
+            $pdf->Cell(40, 7, $row[1], 1, 0, 'L');
+            $pdf->Cell(90, 7, $row[2], 1, 0, 'L');
+            $pdf->Cell(50, 7, $row[3], 1, 1, 'C'); // End of line
         }
 
-        $pdf->Ln(3);
+        $pdf->Ln(5);
         $pdf->Cell(0, 10, 'Dengan Judul Tugas Akhir :', 0, 1);
 
-        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->SetFont('Arial', 'B', 12);
         $pdf->MultiCell(0, 5, $infoujian->judul_final, 0, '');
 
-        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetFont('Arial', '', 12);
         $pdf->Ln(5);
         $pdf->Cell(0, 5, 'Yang dilaksanakan pada waktu sebagai berikut :', 0, 1);
 
-        $pdf->Cell(15, 5, '', 0, 0);
-        $pdf->Cell(50, 5, 'Hari, Tanggal', 0, 0);
-        $pdf->Cell(0, 5, ": " . $hari_indonesia . " / " . $tanggal_indonesia, 0, 1);
-        $pdf->Cell(15, 5, '', 0, 0);
-        $pdf->Cell(50, 5, 'Waktu', 0, 0);
-        $pdf->Cell(0, 5, ": " . $sesi_mulai . ' - ' . $sesi_selesai, 0, 1);
-        $pdf->Cell(15, 5, '', 0, 0);
-        $pdf->Cell(50, 5, 'Tempat', 0, 0);
-        $pdf->Cell(0, 5, ": " . $infoujian->ruangan_nama, 0, 1);
-        $pdf->Cell(0, 5, 'Tugas ini supaya dijalankan dengan sebaik-baiknya dan hasilnya dilaporkan kepada Jurusan.', 0, 1);
+        $pdf->Cell(15, 6, '', 0, 0);
+        $pdf->Cell(50, 6, 'Hari, Tanggal', 0, 0);
+        $pdf->Cell(0, 6, ": " . $hari_indonesia . " / " . $tanggal_indonesia, 0, 1);
+        $pdf->Cell(15, 6, '', 0, 0);
+        $pdf->Cell(50, 6, 'Waktu', 0, 0);
+        $pdf->Cell(0, 6, ": " . $sesi_mulai . ' - ' . $sesi_selesai, 0, 1);
+        $pdf->Cell(15, 6, '', 0, 0);
+        $pdf->Cell(50, 6, 'Tempat', 0, 0);
+        $pdf->Cell(0, 6, ": " . $infoujian->ruangan_nama, 0, 1);
+        $pdf->Cell(0, 7, 'Tugas ini supaya dijalankan dengan sebaik-baiknya dan hasilnya dilaporkan kepada Jurusan.', 0, 1);
 
         $pdf->Ln(3);
         $pdf->Cell(120, 5, '', 0, 0);
@@ -588,7 +589,8 @@ class TaController extends Controller
 
         $pdf->Ln(20);
         $signaturePath = public_path('dist/img/' . $noSk->file_paraf);
-        $pdf->Image($signaturePath, $pdf->GetX() + 110, $pdf->GetY(), 10, 10);
+        // $pdf->Image($signaturePath, $pdf->GetX() + 110, $pdf->GetY(), 10, 10);
+        $pdf->Image($signaturePath, $pdf->GetX() + 140, $pdf->GetY() - 17, 15, 15);
         $pdf->Cell(120, 5, '', 0, 0);
         $pdf->Cell(0, 5, $noSk->nama_kajur, 0, 1);
         $pdf->Cell(120, 5, '', 0, 0);

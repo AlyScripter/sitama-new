@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <table id="datatable-main" class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped">
                                 <thead>
                                     <th>No</th>
                                     <th>Nama Pengguna</th>
@@ -41,9 +41,9 @@
                                     <th>Aksi</th>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $item)
+                                    @foreach ($users as $usr => $item)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $users->firstItem()+$usr }}</td>
                                             <td>{{ $item->name }}</td>
                                             <td>{{ $item->email }}</td>
                                             <td>
@@ -65,6 +65,9 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="mt-3 justify-content-end">
+                                {{ $users->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
