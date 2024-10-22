@@ -22,7 +22,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::all();
+        $menus = Menu::paginate(10);
         return view('menus.index', compact('menus'));
     }
 

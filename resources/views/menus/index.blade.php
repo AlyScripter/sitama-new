@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <table id="datatable-main" class="table table-bordered table-striped text-sm">
+                            <table class="table table-bordered table-striped text-sm">
                                 <thead>
                                     <th>No</th>
                                     <th>Menu</th>
@@ -43,9 +43,9 @@
                                     <th></th>
                                 </thead>
                                 <tbody>
-                                    @foreach ($menus as $item)
+                                    @foreach ($menus as $mn => $item)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $menus->firstItem()+$mn }}</td>
                                             <td>{{ $item->nama_menu }}</td>
                                             <td>{{ $item->url }}</td>
                                             <td>{{ $item->icon ? $item->icon : '-' }}</td>
@@ -118,6 +118,9 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="mt-3">
+                                {{ $menus->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
