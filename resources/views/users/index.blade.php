@@ -65,7 +65,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <div class="mt-3 justify-content-end">
+                            <div class="mt-2 justify-content-end">
                                 {{ $users->links() }}
                             </div>
                         </div>
