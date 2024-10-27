@@ -172,102 +172,107 @@
                                                         <p>: {{ $taSidang->nilai_akhir }} ( {{ $nilaiHuruf }} )</p>
                                                     </div>
                                                 </div> -->
-                                @if ($taSidang->status_lulus == 0)
-                                    <div class="row">
-                                        <div class="col col-md-4">
-                                            <p class="font-weight-bold m-0">Status Sidang</p>
-                                        </div>
-
-                                        <div class="col">
-                                            <p class="m-0">:
-                                                <span class="badge badge-warning">Belum Melaksanakan Sidang</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                @elseif ($taSidang->status_lulus == 1)
-                                    <div class="row">
-                                        <div class="col col-md-4">
-                                            <p class="font-weight-bold m-0">Status Sidang</p>
-                                        </div>
-
-                                        <div class="col">
-                                            <p class="m-0">:
-                                                <span class="badge badge-success">Telah Lulus</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                @elseif ($taSidang->status_lulus == 2)
-                                    <div class="row">
-                                        <div class="col col-md-4">
-                                            <p class="font-weight-bold">Status Sidang</p>
-                                        </div>
-
-                                        <div class="col">
-                                            <h>:
-                                                <span class="badge badge-warning">Lulus dengan Revisi</span>
-                                            </h>
-                                        </div>
-                                    </div>
-                                    @if (isset($mahasiswa->revisi_file))
+                                @if ($taSidang->status_lulus > 0)
+                                    
+                                    @if ($taSidang->status_lulus == 0)
                                         <div class="row">
                                             <div class="col col-md-4">
-                                                <p class="font-weight-bold">File Lampiran </p>
+                                                <p class="font-weight-bold m-0">Status Sidang</p>
                                             </div>
 
                                             <div class="col">
-                                                <p>:
-                                                    <a href="{{ asset('storage/draft_revisi/' . $mahasiswa->revisi_file) }}"
-                                                        target="_blank"> {{ $mahasiswa->revisi_file_original }}</a>
+                                                <p class="m-0">:
+                                                    <span class="badge badge-warning">Belum Melaksanakan Sidang</span>
                                                 </p>
                                             </div>
                                         </div>
-                                    @endif
-                                    <form action="{{ route('sidang-tugas-akhir.store') }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row d-md-flex align-items-center">
-                                            <div class="col-sm-6 col-md-4">
-                                                <p class="m-sm-0 font-weight-bold mb-1">Unggah File Revisi</p>
+                                    @elseif ($taSidang->status_lulus == 1)
+                                        <div class="row">
+                                            <div class="col col-md-4">
+                                                <p class="font-weight-bold m-0">Status Sidang</p>
                                             </div>
+
                                             <div class="col">
-                                                <div class="custom-file">
-                                                    <input class="form-control" type="file" id="draft_revisi"
-                                                        name="draft_revisi" accept="application/pdf">
-                                                    <span class="text-danger">Format file : PDF(Max 2MB)</span>
-                                                    @error('draft')
-                                                        <div class="invalid-feedback" role="alert">
-                                                            <span>{{ $message }}</span>
-                                                        </div>
-                                                    @enderror
+                                                <p class="m-0">:
+                                                    <span class="badge badge-success">Telah Lulus</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @elseif ($taSidang->status_lulus == 2)
+                                        <div class="row">
+                                            <div class="col col-md-4">
+                                                <p class="font-weight-bold">Status Sidang</p>
+                                            </div>
+
+                                            <div class="col">
+                                                <h>:
+                                                    <span class="badge badge-warning">Lulus dengan Revisi</span>
+                                                </h>
+                                            </div>
+                                        </div>
+                                        @if (isset($mahasiswa->revisi_file))
+                                            <div class="row">
+                                                <div class="col col-md-4">
+                                                    <p class="font-weight-bold">File Lampiran </p>
+                                                </div>
+
+                                                <div class="col">
+                                                    <p>:
+                                                        <a href="{{ asset('storage/draft_revisi/' . $mahasiswa->revisi_file) }}"
+                                                            target="_blank"> {{ $mahasiswa->revisi_file_original }}</a>
+                                                    </p>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col col-md-4"></div>
-                                            <div class="col-sm-6 col-md-8">
-                                                <button type="submit" class="btn btn-info col-md-3"><i
-                                                        class="fa fa-save mr-1"></i>Upload</button>
+                                        @endif
+                                        <form action="{{ route('sidang-tugas-akhir.store') }}" method="POST"
+                                            enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row d-md-flex align-items-center">
+                                                <div class="col-sm-6 col-md-4">
+                                                    <p class="m-sm-0 font-weight-bold mb-1">Unggah File Revisi</p>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="custom-file">
+                                                        <input class="form-control" type="file" id="draft_revisi"
+                                                            name="draft_revisi" accept="application/pdf">
+                                                        <span class="text-danger">Format file : PDF(Max 2MB)</span>
+                                                        @error('draft')
+                                                            <div class="invalid-feedback" role="alert">
+                                                                <span>{{ $message }}</span>
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col col-md-4"></div>
+                                                <div class="col-sm-6 col-md-8">
+                                                    <button type="submit" class="btn btn-info col-md-3"><i
+                                                            class="fa fa-save mr-1"></i>Upload</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    @elseif ($taSidang->status_lulus == 3)
+                                        <div class="row">
+                                            <div class="col col-md-4">
+                                                <p class="font-weight-bold m-0">Status Sidang</p>
+                                            </div>
+
+                                            <div class="col">
+                                                <p class="m-0">:
+                                                    <span class="badge badge-danger">Tidak Lulus</span>
+                                                </p>
                                             </div>
                                         </div>
-                                    </form>
-                                @elseif ($taSidang->status_lulus == 3)
-                                    <div class="row">
-                                        <div class="col col-md-4">
-                                            <p class="font-weight-bold m-0">Status Sidang</p>
-                                        </div>
-
+                                    @else
                                         <div class="col">
-                                            <p class="m-0">:
-                                                <span class="badge badge-danger">Tidak Lulus</span>
-                                            </p>
+                                            <p>: Data Sidang Tidak Ditemukan</p>
                                         </div>
-                                    </div>
-                                @else
-                                    <div class="col">
-                                        <p>: Data Sidang Tidak Ditemukan</p>
+                                    @endif
+                                    <div class="mt-3">
+                                        <a href="{{ url('/upload-lembar-pengesahan') }}" class="btn btn-primary">Upload Lembar Pengesahan</a>
                                     </div>
                                 @endif
-
                             </div>
                         </div>
                     </div>

@@ -9,6 +9,7 @@ use App\Models\TaSidang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 // Mahasiswa
@@ -86,5 +87,32 @@ class SidangTaController extends Controller
             toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
             return redirect()->route('sidang-tugas-akhir.index');
         }
+    }
+
+    public function upload_lembar_pengesahan() {
+        return view('sidang-ta.upload-lembar-pengesahan');
+    }
+
+    public function upload_lembar(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'file_name' => 'required|mimetypes:application/pdf|max:2048'
+        ]);
+
+        $id = Auth::user()->id;
+        $mahasiswa = Bimbingan::Mahasiswa($id);
+        $mhs = $mahasiswa->mhs_nim;
+        
+        $file = $request->file('file');
+        $fileName = date('Ymdhis') . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/lembar_pengesahan', $fileName);
+        $file_name_original = $file->getClientOriginalName();
+
+        DB::table('lembar_pengesahan')->insert([
+            'file_name' => $fileName,
+            'file_name_original' => $file_name_original,
+            'mhs_nim' => $mhs,
+        ]);
+
+        return redirect('sidang-tugas-akhir');
     }
 }

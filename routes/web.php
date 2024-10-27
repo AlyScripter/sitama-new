@@ -162,6 +162,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('sidang-tugas-akhir/surat-tugas', [SidangTaController::class, 'suratTugas']);
     Route::resource('sidang-tugas-akhir', SidangTaController::class);
+    Route::get('upload-lembar-pengesahan', [SidangTaController::class, 'upload_lembar_pengesahan']);
+    Route::post('sidang-tugas-akhir/upload-lembar', [SidangTaController::class, 'upload_lembar']);
 
     // Dosen TA
     Route::get('/ujian-sidang', [UjianSidangController::class, 'index'])->name('ujian-sidang.index');
