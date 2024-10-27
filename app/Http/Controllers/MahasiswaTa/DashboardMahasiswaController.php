@@ -40,7 +40,9 @@ class DashboardMahasiswaController extends Controller
         $nim = Bimbingan::Mahasiswa($id)->mhs_nim;
         $dataTa = Ta::dataTa($id);
 
-        $thnAkademik = (date("Y") - 1) . "/" . date("Y");
+        // $thnAkademik = (date("Y") - 1) . "/" . date("Y");
+        $thnAkademik = DB::table('master_ta')->select('ta')->where('status', 1)->value('ta');
+        // dd($thnAkademik);
 
         try {
             if (!isset($dataTa)) {

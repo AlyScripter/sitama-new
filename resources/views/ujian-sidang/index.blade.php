@@ -327,6 +327,11 @@
                                                                 </div>
                                                             </div>
                                                         @endif
+                                                        <div class="mt-2">
+                                                            <a class="btn btn-success" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
+                                                                Cetak Lembar Pengesahan
+                                                            </a>
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>
