@@ -1072,4 +1072,20 @@ class UjianSidangController extends Controller
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }
+
+    public function view_lembar($id)
+    {
+        $datamhs = Ta::where('ta_id', $id)->first();
+        $nim = $datamhs->mhs_nim;
+        // dd($nim);
+        $fileName = DB::table('lembar_pengesahan')->where('mhs_nim', $nim)->value('file_name');
+        
+        $filePath = storage_path('app/public/lembar_pengesahan/' . $fileName);
+        // dd($filePath);
+        if (file_exists($filePath)) {
+            return response()->file($filePath); // To display the PDF in the browser
+        }
+        abort(404); // File not found
+    }
+
 }
