@@ -44,7 +44,7 @@ class TaController extends Controller
 
         $taSidang = $taSidangQuery->all();
         $kode_prodi = KodeProdi::all();
-        //dd($kode_prodi);
+        // dd($taSidang);
         return view('ta.index', compact('taSidang', 'kode_prodi'));
     }
 

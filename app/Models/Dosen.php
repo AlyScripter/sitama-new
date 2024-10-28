@@ -26,4 +26,9 @@ class Dosen extends Model
 
         return $nip;
     }
+
+    public function revisiMahasiswa()
+    {
+        return $this->hasMany(RevisiMahasiswa::class, 'dosen_nip', 'dosen_nip');
+    }
 }

@@ -185,7 +185,7 @@
                 <div class="modal-body">
                     {{-- <p>{{ $dst->dokumen_file_original }}</p> --}}
                     <embed
-                        src="/stream-document/{{ encrypt(env('APP_FILE_SYARAT_TA_PATH') . $s->dokumen_file) . '?dl=0&filename=' . $s->dokumen_file_original }}"
+                        src="/stream-document/{{ encrypt(env('APP_FILE_SYARAT_TA_PATH') . $s->dokumen_file) . '?dl=0&filename=' . $s->dokumen_file_original }}&directory=syarat_ta"
                         type="application/pdf" width="100%" height="400px">
                     <hr>
                     <div class="text-right">
