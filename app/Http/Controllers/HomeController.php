@@ -156,25 +156,50 @@ class HomeController extends Controller
 
     public function streamDocument($enc_path)
     {
-        $dl       = request()->get('dl');
-        $filename = request()->get('filename'); //FILENAME WAJIB SUDAH ADA EKSTENSINYA
+        $dl = request()->get('dl');
+        $filename = request()->get('filename'); // Ensure this has the extension
 
-        $file     = decrypt($enc_path);
-        $mimetype = mime_content_type($file);
+        // Decrypt the path
+        $file = decrypt($enc_path);
+        
+        // Define directories
+        $directories = [
+            'storage/draft_revisi/',
+            'storage/draft_ta/',
+            'storage/syarat_ta/',
+            'storage/lembar_pengesahan/'
+        ];
 
-        $parts = explode(".", $file);
-        $ext   = $parts[count($parts) - 1];
+        $fullPath = null;
 
+        // Loop through directories to find the file
+        foreach ($directories as $directory) {
+            $path = public_path($directory . $file);
+            if (file_exists($path)) {
+                $fullPath = $path;
+                break; // Exit the loop once the file is found
+            }
+        }
+
+        // Check if the file was found
+        if (!$fullPath) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        $mimetype = mime_content_type($fullPath);
         header('Content-Type: ' . $mimetype);
         header('Content-Description: File Transfer');
+
         if ($dl == '1') {
             header('Content-Disposition: attachment; filename="' . $filename . '"');
         } else {
             header('Content-Disposition: inline; filename="' . $filename . '"');
         }
-        readfile($file);
-        die;
+
+        readfile($fullPath);
+        exit;
     }
+
 
     public function resetPasswordFormRequest()
     {

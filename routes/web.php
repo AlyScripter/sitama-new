@@ -39,6 +39,7 @@ use App\Http\Controllers\MahasiswaTa\BimbinganMahasiswaController;
 use App\Http\Controllers\MahasiswaTa\DaftarTaController;
 use App\Http\Controllers\MahasiswaTa\DashboardMahasiswaController;
 use App\Http\Controllers\MahasiswaTa\SidangTaController;
+use App\Http\Controllers\RevisiMahasiswaController;
 
 
 
@@ -150,6 +151,8 @@ Route::middleware(['auth'])->group(function () {
     // Mahasiswa TA
     Route::get('dashboard-mahasiswa/autocomplete', [DashboardMahasiswaController::class, 'autocomplete']);
     Route::resource('dashboard-mahasiswa', DashboardMahasiswaController::class);
+
+    Route::resource('revisi-mahasiswa', RevisiMahasiswaController::class);
 
     Route::get('bimbingan-mahasiswa/cetak-persetujuan-sidang', [BimbinganMahasiswaController::class, 'cetak_persetujuan_sidang'])->name('bimbingan-mahasiswa.cetak_persetujuan_sidang');
     Route::get('bimbingan-mahasiswa/cetak_lembar_kontrol/{id}/{sebagai}', [BimbinganMahasiswaController::class, 'CetakLembarKontrol'])->name('bimbingan-mahasiswa.CetakLembarKontrol');

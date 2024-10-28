@@ -68,6 +68,8 @@ class BimbinganMahasiswaController extends Controller
     {
         $id = Auth::user()->id;
         $mahasiswa = Bimbingan::Mahasiswa($id);
+
+        dd($mahasiswa);
         return view('bimbingan-mahasiswa.create', compact('mahasiswa'));
     }
 
