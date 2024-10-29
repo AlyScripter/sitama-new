@@ -16,24 +16,32 @@ class RevisiMahasiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $id = Auth::user()->id;
         $dataTa = Ta::dataTa($id)->mhs_nim;
-        $revisi = revisi_mahasiswa::with('dosen')->get();
-        $taSidang = Ta::taSidang2();
 
-        $dosen = collect(Ta::taSidang2())->where('mhs_nim', $dataTa)->value('dosen');
+        // Mulai dengan query builder
+        $revisi = revisi_mahasiswa::with('dosen', 'bimbingan');
 
-        // $dosen_nip = explode(',', $dosen);
+        // Periksa apakah ada parameter 'dosen' dan terapkan filter yang sesuai
+        if ($request->filled('dosen')) {
+            if ($request->input('dosen') == "0") {
+                // Tampilkan hanya Dosen Pembimbing (yang memiliki relasi dengan bimbingan)
+                $revisi->whereHas('bimbingan');
+            } elseif ($request->input('dosen') == "1") {
+                // Tampilkan hanya Dosen Penguji (yang tidak memiliki relasi dengan bimbingan)
+                $revisi->whereDoesntHave('bimbingan');
+            }
+        }
 
-        // $dosen1 = intval($dosen_nip);
+        // Eksekusi query dan ambil data yang difilter
+        $revisi = $revisi->get();
 
-        // $revisi = revisi_mahasiswa::with('dosen')->where('dosen_nip', $dosen_nip);
-        dd($dosen);
-        
         return view('revisi.index', compact('revisi'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -94,7 +102,16 @@ class RevisiMahasiswaController extends Controller
      */
     public function edit(revisi_mahasiswa $revisi_mahasiswa)
     {
-        //
+        $id = Auth::user()->id;
+        $dataTa = Ta::dataTa($id)->mhs_nim;
+        
+        $revisi = revisi_mahasiswa::find($revisi_mahasiswa->id);
+        // dd($revisi);
+        $taSidang = Ta::taSidang2();
+
+        $dosen = collect(Ta::taSidang2())->where('mhs_nim', $dataTa)->first();
+
+        return view('revisi.edit', compact('dosen', 'revisi'));
     }
 
     /**

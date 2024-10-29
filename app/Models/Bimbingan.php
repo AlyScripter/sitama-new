@@ -372,4 +372,9 @@ class Bimbingan extends Model
     {
         return DB::table('dosen')->where('dosen_nip', $dosenNip)->value('dosen_nama');
     }
+
+    public function revisiMahasiswa()
+    {
+        return $this->hasMany(RevisiMahasiswa::class, 'dosen_nip', 'dosen_nip');
+    }
 }
