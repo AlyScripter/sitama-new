@@ -36,7 +36,15 @@
                                 @csrf
                                 <div class="row d-flex align-items-center">
                                     <div class="col-md mb-md-0 mb-2">
-                                        <button type="submit" class="btn btn-sm btn-sm-block btn-primary">Filter</button>
+                                        <select class="custom-select" name="dosen" onchange="this.form.submit()">
+                                            <option value="">All Pembimbing / Penguji</option>
+                                            <option value="0" {{ request('dosen') === "0" ? 'selected' : '' }}>
+                                                Filter by Dosen Pembimbing
+                                            </option>
+                                            <option value="1" {{ request('dosen') === "1" ? 'selected' : '' }}>
+                                                Filter by Dosen Penguji
+                                            </option>
+                                        </select>
                                     </div>
                                     <div class="col text-right">
                                         <div class="card-tools">
@@ -67,7 +75,20 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->dosen->dosen_nama }}</td>
-                                                    <td>{{ $item->revisi_file_original }}</td>
+                                                    <td class="text-center">
+                                                        @if (!isset($item->revisi_file))
+                                                            <span class="badge badge-danger">Belum Upload</span>
+                                                        @else
+                                                            {{-- <a href="{{ asset('storage/draft_revisi/' . $item->revisi_file) }}"
+                                                                target="_blank" class="btn btn-sm btn-success"><i
+                                                                    class="fa fa-eye"></i></a> --}}
+                                                            <a href="#" data-toggle="modal"
+                                                                data-target="#modal-{{ $item->id }}"
+                                                                class="btn btn-sm btn-success">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $item->revisi_deskripsi }}</td>
                                                     <td>
                                                         @if ($item->revisi_status == 0)
@@ -94,7 +115,7 @@
                                                             </button>
                                                             <div class="dropdown-menu" role="menu">
                                                                 <a class="dropdown-item text-warning"
-                                                                    href="">
+                                                                    href="{{ route('revisi-mahasiswa.edit', $item->id) }}">
                                                                     <i class="fas fa-edit text-warning mr-2"></i>Edit</a>
                                                                 <div class="dropdown-divider"></div>
                                                                 <form method="POST"
@@ -122,6 +143,39 @@
         </div>
     </div>
 @endsection
+
+
+@foreach ($revisi as $s)
+    <div class="modal fade" id="modal-{{ $s->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">{{ $s->dokumen_syarat }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{-- <p>{{ $dst->revisi_file_original }}</p> --}}
+                    <embed
+                        src="/stream-document/{{ encrypt(env('APP_FILE_SYARAT_TA_PATH') . $s->revisi_file) . '?dl=0&filename=' . $s->revisi_file_original }}&directory=draft_revisi"
+                        type="application/pdf" width="100%" height="400px">
+                    <hr>
+                    <div class="text-right">
+                        <button type="button" data-syarat-sidang-id="{{ $s->id }}"
+                            class="btn btn-danger btn-sm validasi-modal-invalid"><i class="fa fa-check"></i> Dokumen
+                            Tidak Valid</button>
+                        <button type="button" data-syarat-sidang-id="{{ $s->id }}"
+                            class="btn btn-success validasi-modal"><i class="fa fa-check"></i> Dokumen Valid</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+
 @push('js')
     <script>
         $('.toast').toast('show')
