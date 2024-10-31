@@ -119,7 +119,7 @@
                                                                     <i class="fas fa-edit text-warning mr-2"></i>Edit</a>
                                                                 <div class="dropdown-divider"></div>
                                                                 <form method="POST"
-                                                                    action="">
+                                                                    action="{{ route('revisi-mahasiswa.destroy', $item->id) }}">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <a class="dropdown-item confirm-button text-danger"

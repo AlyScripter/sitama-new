@@ -100,7 +100,7 @@ class RevisiMahasiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(revisi_mahasiswa $revisi_mahasiswa)
+    public function edit(revisi_mahasiswa $revisi_mahasiswa, Request $request)
     {
         $id = Auth::user()->id;
         $dataTa = Ta::dataTa($id)->mhs_nim;
@@ -110,7 +110,8 @@ class RevisiMahasiswaController extends Controller
         $taSidang = Ta::taSidang2();
 
         $dosen = collect(Ta::taSidang2())->where('mhs_nim', $dataTa)->first();
-
+        
+        // dd($dosen);
         return view('revisi.edit', compact('dosen', 'revisi'));
     }
 
@@ -119,7 +120,50 @@ class RevisiMahasiswaController extends Controller
      */
     public function update(Request $request, revisi_mahasiswa $revisi_mahasiswa)
     {
-        //
+        // $validator = Validator::make($request->all(), [
+        //     'revisi_deskripsi' => 'required',
+        //     'revisi_file' => 'required',
+        //     'dosen_nip' => 'required',
+        //     'mhs_nim' => 'required',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     toastr()->error('Revisi gagal diupdate </br> Periksa kembali data anda');
+        //     return redirect()->back()
+        //         ->withErrors($validator)
+        //         ->withInput();
+        // };
+
+        try {
+            $id = Auth::user()->id;
+            $dataTa = Ta::dataTa($id)->mhs_nim;
+            // dd($dataTa);
+            
+            $revisi = revisi_mahasiswa::find($revisi_mahasiswa->id);
+            $revisi->dosen_nip = $request->dosen_nip;
+            $revisi->mhs_nim = $dataTa;
+            $revisi->revisi_deskripsi = $request->revisi_deskripsi;
+
+            if ($request->hasFile('draft')) {
+                $fileLama = public_path('storage/draft_revisi/' . $revisi->revisi_file);
+                if (file_exists($fileLama) && !empty($revisi->revisi_file)) {
+                    unlink($fileLama);
+                }
+
+                $draft = $request->file('draft');
+                $nama_file = date('Ymdhis') . '.' . $draft->getClientOriginalExtension();
+                $draft->storeAs('public/draft_revisi', $nama_file);
+                $revisi->revisi_file = $nama_file;
+                $revisi->revisi_file_original = $draft->getClientOriginalName();
+            }
+
+            $revisi->update();
+            toastr()->success('Revisi berhasil diupdate');
+            return redirect()->route('revisi-mahasiswa.index');
+        } catch (\Throwable $th) {
+            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
+            return redirect()->route('revisi-mahasiswa.index');
+        }
     }
 
     /**
@@ -127,6 +171,21 @@ class RevisiMahasiswaController extends Controller
      */
     public function destroy(revisi_mahasiswa $revisi_mahasiswa)
     {
-        //
+        try {
+            $revisi = $revisi_mahasiswa->id;
+
+            $fileLama = public_path('storage/draft_revisi/' . $revisi->revisi_file);
+            if (file_exists($fileLama)) {
+                unlink($fileLama);
+            }
+
+            $revisi->delete();
+
+            toastr()->success('Log berhasil dihapus');
+            return redirect()->route('revisi-mahasiswa.index');
+        } catch (\Throwable $th) {
+            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
+            return redirect()->route('revisi-mahasiswa.index');
+        }
     }
 }
