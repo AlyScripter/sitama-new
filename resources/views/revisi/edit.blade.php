@@ -26,13 +26,15 @@
                                 <a href="{{ route('revisi-mahasiswa.index') }}" class="btn btn-tool"><i class="fas fa-arrow-alt-circle-left"></i></a>
                             </div>
                         </div>
-                        <form action="{{ route('revisi-mahasiswa.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('revisi-mahasiswa.update', $revisi->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Pembimbing / Penguji <span class="text-danger">*</span></label>
-                                    <select class="custom-select @error('pembimbing')is-invalid @enderror" name="pembimbing" disabled>
-                                        <option value="{{ $revisi->dosen->dosen_nip }}">{{ $revisi->dosen->dosen_nama }}</option>
+                                    <select class="custom-select @error('pembimbing')is-invalid @enderror" disabled>
+                                        <option value="{{ $revisi->dosen_nip }}">{{ $revisi->dosen->dosen_nama }}</option>
+                                        <input type="hidden" name="dosen_nip" value="{{ $revisi->dosen_nip }}">
                                     </select>
                                     @error('pembimbing')
                                         <div class="invalid-feedback" role="alert">
@@ -52,7 +54,7 @@
                                 <div class="form-group">
                                     <label>File Lampiran</label>
                                     <div class="custom-file">
-                                        <input class="form-control" type="file" id="file" name="file" accept="application/pdf">
+                                        <input class="form-control" type="file" id="draft" name="draft" accept="application/pdf">
                                         <span class="text-danger">Format file : PDF(Max 2MB)</span>
                                         @error('file')
                                             <div class="invalid-feedback" role="alert">
@@ -60,6 +62,14 @@
                                             </div>
                                         @enderror
                                     </div>
+                                </div>                        
+                                <div class="d-flex flex-column">
+                                    <label>File Sebelumnya</label>
+                                    @if (isset($revisi->revisi_file))
+                                        <a href="{{ asset('storage/draft_revisi/' . $revisi->revisi_file) }}" target="_blank">{{ $revisi->revisi_file_original }}</a>
+                                    @else
+                                        <p class="m-0">Tidak Ada Lampiran</p>
+                                    @endif
                                 </div>
                                 <div>
                                     <h6 class="text-bold">Keterangan :</h6>
