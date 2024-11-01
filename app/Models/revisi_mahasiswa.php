@@ -18,4 +18,9 @@ class revisi_mahasiswa extends Model
     {
         return $this->belongsTo(Bimbingan::class, 'dosen_nip', 'dosen_nip');
     }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(mahasiswa::class, 'mhs_nim', 'mhs_nim');
+    }
 }

@@ -339,7 +339,7 @@ class BimbinganMahasiswaController extends Controller
                 $bimbingan->bimb_judul . "\n" . $bimbingan->bimb_desc,
                 '' // This will be replaced with the image
             ];
-
+            // dd($bimbingan->file_ttd);
             // Get the signature image path
             $signatureImagePath = public_path('dist/img/' . $bimbingan->file_ttd);
             $images = [null, null, null, $signatureImagePath];

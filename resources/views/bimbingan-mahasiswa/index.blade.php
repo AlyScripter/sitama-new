@@ -177,7 +177,7 @@
                             @endforeach
                             @if ($verified_all == 1)
                                 <div class="card-tools float-right">
-                                    <a href="/bimbingan-mahasiswa/cetak-persetujuan-sidang" class="btn btn-sm btn-danger"
+                                    <a href="{{ url('/bimbingan-mahasiswa/cetak-persetujuan-sidang') }}" class="btn btn-sm btn-danger"
                                         target="_blank">
                                         <i class="fa fa-file-pdf mr-1"></i> Cetak Persetujuan Sidang
                                     </a>

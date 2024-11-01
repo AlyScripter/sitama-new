@@ -9,4 +9,9 @@ class mahasiswa extends Model
 {
     protected $table = 'mahasiswa';
     use HasFactory;
+
+    public function revisiMahasiswa()
+    {
+        return $this->hasMany(RevisiMahasiswa::class, 'mhs_nim', 'mhs_nim');
+    }
 }

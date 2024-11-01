@@ -33,13 +33,14 @@ use App\Http\Controllers\Auth\GoogleLoginController;
 // Dosen TA
 use App\Http\Controllers\DosenTa\MahasiswaBimbinganController;
 use App\Http\Controllers\DosenTa\UjianSidangController;
+use App\Http\Controllers\DosenTa\RevisiDosenController;
 
 // Mahasiswa TA
 use App\Http\Controllers\MahasiswaTa\BimbinganMahasiswaController;
 use App\Http\Controllers\MahasiswaTa\DaftarTaController;
 use App\Http\Controllers\MahasiswaTa\DashboardMahasiswaController;
 use App\Http\Controllers\MahasiswaTa\SidangTaController;
-use App\Http\Controllers\RevisiMahasiswaController;
+use App\Http\Controllers\MahasiswaTa\RevisiMahasiswaController;
 
 
 
@@ -152,6 +153,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard-mahasiswa/autocomplete', [DashboardMahasiswaController::class, 'autocomplete']);
     Route::resource('dashboard-mahasiswa', DashboardMahasiswaController::class);
 
+    Route::get('revisi-mahasiswa/cetak_lembar_revisi/{id}', [RevisiMahasiswaController::class, 'CetakLembarRevisi'])->name('revisi-mahasiswa.CetakLembarRevisi');
     Route::resource('revisi-mahasiswa', RevisiMahasiswaController::class);
 
     Route::get('bimbingan-mahasiswa/cetak-persetujuan-sidang', [BimbinganMahasiswaController::class, 'cetak_persetujuan_sidang'])->name('bimbingan-mahasiswa.cetak_persetujuan_sidang');
@@ -190,6 +192,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/setujui-pembimbingan/{ta_id}', [MahasiswaBimbinganController::class, 'setujuiPembimbingan'])->name('setujui-pembimbingan');
     Route::get('/mhsbimbingan/{ta_id}', [MahasiswaBimbinganController::class, 'pembimbingan'])->name('mhsbimbingan.pembimbingan');
     Route::resource('mhsbimbingan', MahasiswaBimbinganController::class);
+
+    Route::resource('revisi-dosen', RevisiDosenController::class);
+    Route::post('/setujui-revisi/{id}', [RevisiDosenController::class, 'setujuiRevisi'])->name('setujui-revisi');
 
     Route::get('dbbackup', [DBBackupController::class, 'DBDataBackup']);
 });
