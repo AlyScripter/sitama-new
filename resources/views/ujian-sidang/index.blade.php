@@ -221,10 +221,13 @@
                                                                         <i class="fas fa-edit"></i> Input Nilai
                                                                     </a>
                                                                     <a class="dropdown-item"
-                                                                        href="{{ route('ujian-sidang.revisi', ['ta_id' => $item->ta_id]) }}"
+                                                                        href="{{ url('revisi-dosen') }}"
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         title="Lihat Revisi">
                                                                         <i class="fas fa-eye"></i> Lihat Revisi
+                                                                    </a>            
+                                                                    <a class="dropdown-item" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf"></i> Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -248,10 +251,13 @@
                                                                         <i class="fas fa-edit"></i> Input Nilai
                                                                     </a>
                                                                     <a class="dropdown-item"
-                                                                        href="{{ route('ujian-sidang.revisi2', ['ta_id' => $item->ta_id]) }}"
+                                                                        href="{{ url('revisi-dosen') }}"
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         title="Lihat Revisi">
                                                                         <i class="fas fa-eye"></i> Lihat Revisi
+                                                                    </a>            
+                                                                    <a class="dropdown-item" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf"></i> Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -327,11 +333,6 @@
                                                                 </div>
                                                             </div>
                                                         @endif
-                                                        <div class="mt-2">
-                                                            <a class="btn btn-success" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
-                                                                Cetak Lembar Pengesahan
-                                                            </a>
-                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>
