@@ -66,7 +66,7 @@ use App\Helpers\NilaiHelper;
             <thead>
                 <tr class="first-row">
                     <td rowspan="4" style="text-align: center; width: 20%;" class="first-col">
-                        <img src="https://sitama-elektro.polines.ac.id/dist/img/logo-polines-bw.png" width="100">
+                        <img src="{{ asset('dist/img/logo-polines-bw.png') }}" width="100">
                     </td>
                     <td rowspan="4" style="text-align: center">
                         <b>
@@ -161,7 +161,7 @@ use App\Helpers\NilaiHelper;
                     <td width='40%'>
                         Semarang, {{ $info_sidang->tgl_sidang }}<br>
                         Pembimbing {{ $nilai->urutan }},<br>
-                        &nbsp;&nbsp;<img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $nilai->file_ttd }}"
+                        &nbsp;&nbsp;<img src="{{ asset('dist/img/' . $nilai->file_ttd) }}"
                             height="100">
                         <br>
                         {{ $nilai->dosen_nama }}<br>

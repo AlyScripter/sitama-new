@@ -69,7 +69,7 @@ use App\Helpers\NilaiHelper;
             <thead>
                 <tr class="first-row">
                     <td rowspan="4" style="text-align: center; width: 20%;" class="first-col">
-                        <img src="https://sitama-elektro.polines.ac.id/dist/img/logo-polines-bw.png" width="100">
+                        <img src="{{ asset('dist/img/logo-polines-bw.png') }}" width="100">
                     </td>
                     <td rowspan="4" style="text-align: center">
                         <h1>
@@ -159,7 +159,7 @@ use App\Helpers\NilaiHelper;
                     <td width='50%'>
                         Semarang, {{ $info_sidang->tgl_sidang }}<br>
                         Penguji {{ $romawi[$nilai->urutan] }},<br>
-                        &nbsp;&nbsp;<img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $nilai->file_ttd }}"
+                        &nbsp;&nbsp;<img src="{{ asset('dist/img/' . $nilai->file_ttd) }}"
                             height="100">
                         <br>
                         {{ $nilai->dosen_nama }}<br>
@@ -265,7 +265,7 @@ use App\Helpers\NilaiHelper;
                         <td>Penguji {{ $romawi[$nilai->urutan] }}</td>
                         <td style="text-align: center;">{{ $nilai->jml_nilai }}</td>
                         <td style="text-align: center; padding-left:{{ rand(-50, 50) }}px; width: 20%;">
-                            <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $nilai->file_ttd }}"
+                            <img src="{{ asset('dist/img/' . $nilai->file_ttd) }}"
                                 height="{{ rand(36, 44) }}">
                         </td>
                     </tr>
@@ -292,7 +292,7 @@ use App\Helpers\NilaiHelper;
                 <td>
                     <br>
                     Ketua Tim Penguji,<br>
-                    &nbsp;&nbsp;<img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $bimbingans[0]->file_ttd }}"
+                    &nbsp;&nbsp;<img src="{{ asset('dist/img/' . $bimbingans[0]->file_ttd) }}"
                         height="100"
                         style="margin-left: {{ $ttd_margin_left }}; margin-bottom: -{{ $ttd_margin_bottom }};">
                     <br>
@@ -302,7 +302,7 @@ use App\Helpers\NilaiHelper;
                 <td width='50%'>
                     Semarang, {{ $info_sidang->tgl_sidang }}<br>
                     Sekretaris Tim Penguji,<br>
-                    &nbsp;&nbsp;<img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $info_sidang->sekre_ttd }}"
+                    &nbsp;&nbsp;<img src="{{ asset('dist/img/' . $info_sidang->sekre_ttd) }}"
                         height="100"
                         style="margin-left: {{ $ttd_margin_left }}; margin-bottom: -{{ $ttd_margin_bottom }};">
                     <br>

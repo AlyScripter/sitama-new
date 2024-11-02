@@ -71,7 +71,7 @@ use App\Helpers\NilaiHelper;
         <thead>
             <tr class="first-row">
                 <td rowspan="4" style="text-align: center; width: 20%;" class="first-col">
-                    <img src="https://sitama-elektro.polines.ac.id/dist/img/logo-polines-bw.png" width="100">
+                    <img src="{{ asset('dist/img/logo-polines-bw.png') }}" width="100">
                 </td>
                 <td rowspan="4" style="text-align: center">
                     <b>
@@ -208,7 +208,7 @@ use App\Helpers\NilaiHelper;
                     <td style="width: 33%">
                         Penguji {{ $romawi[$row->urutan] }},
                         <br><br>
-                        <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $row->file_ttd }}" height="80">
+                        <img src="{{ asset('dist/img/' . $row->file_ttd) }}" height="80">
                         <br>
                         {{ $row->dosen_nama_singkatan }}<br>
                         NIP. {{ $row->dosen_nip }}
@@ -222,7 +222,7 @@ use App\Helpers\NilaiHelper;
                     <td>
                         Ketua,
                         <br>
-                        <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $row->file_ttd }}"
+                        <img src="{{ asset('dist/img/' . $row->file_ttd) }}"
                             style="height: 100px;">
                         <br>
                         {{ $row->dosen_nama }}<br>
@@ -232,7 +232,7 @@ use App\Helpers\NilaiHelper;
                 <td>
                     Sekretaris,
                     <br>
-                    <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $info_sidang->sekre_ttd }}"
+                    <img src="{{ asset('dist/img/' . $info_sidang->sekre_ttd) }}"
                         style="height: 100px;">
                     <br>
                     {{ $info_sidang->sekre_nama }}<br>
