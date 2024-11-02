@@ -202,13 +202,13 @@ class RevisiMahasiswaController extends Controller
 
     public function CetakLembarRevisi($id)
     {
-        $id = Auth::user()->id;
-        $dataTa = Ta::dataTa($id)->mhs_nim;
-        $revisi = revisi_mahasiswa::where('mhs_nim', $dataTa)->with('dosen', 'bimbingan', 'mahasiswa')->get();
-
-        // dd($ttd);
-        $nim = $dataTa;
-        $nama = Auth::user()->name;
+        $revisi = dosen::with('revisiMahasiswa')->find($id);
+        $dosen = $revisi->revisiMahasiswa->value('id');
+        $mhs = revisi_mahasiswa::with('mahasiswa')->find($dosen);
+        
+        $nim = $mhs->mhs_nim;
+        $nama = $mhs->mahasiswa->mhs_nama;
+        // dd($nama);
         $depan_jenjang = substr($nim, 0, 1);
         if ($depan_jenjang == '3')
             $jen = "D3";
@@ -255,30 +255,33 @@ class RevisiMahasiswaController extends Controller
         $pdf->SetFont('Arial', '', 12);
         $pdf->SetWidths([90, 100]);
 
+        $ta = ta::where('mhs_nim', $nim)->value('ta_judul');
+        // dd($ta);
         $data = [
             "Nama : " . $nama . "\n\nKelas : " . $susun_kelas . "\n\nNIM : " . $nim . "\n\n",
-            "Judul Tugas Akhir/Skripsi : " . $revisi[0]->ta_judul
+            "Judul Tugas Akhir/Skripsi : " . $ta
         ];
 
         $underline = [0, 1, 0];
         $pdf->Row($data, $underline);
 
         // Add the second table
-        $pdf->SetWidths([10, 130, 50]); // Adjust widths as needed
-        $pdf->Row(["No.", "Uraian", "Tandatangan Pembimbing"], [0, 0, 0, 0]);
-
-        $ttd = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->get();
-        // dd($ttd);
-        foreach ($ttd as $index => $item) {
+        $pdf->SetWidths([10, 140, 40]); // Adjust widths as needed
+        $pdf->Row(["No.", "Uraian", "Tandatangan Pembimbing"], [0, 0, 0]);
+        // Loop through your bimbingan data
+        foreach ($revisi->revisiMahasiswa as $index => $item) {
+            // dd($index);
             $rowData = [
-                $index + 1,
-                $item->revisi_deskripsi,
-                $signatureImagePath = public_path('dist/img/' . $item->file_ttd)
+                $index+1,
+                $item->revisi_deskripsi. "\n" . " ",
+                '' // This will be replaced with the image
             ];
-            
+            // dd($revisi->dosen->file_ttd);
             // Get the signature image path
+            $signatureImagePath = public_path('dist/img/' . $revisi->file_ttd);
             $images = [null, null, $signatureImagePath];
-
+            // dd($images);
+            // $pdf()
             $pdf->Row($rowData, [0, 0, 0], $images);
         }
 
@@ -286,12 +289,12 @@ class RevisiMahasiswaController extends Controller
         $pdf->Ln(10); // Adjust as needed
 
         // Add the footer section
-        $this->addFooterSection($pdf);
+        $this->addFooterSection($pdf, $revisi);
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }
 
-    function addFooterSection($pdf)
+    function addFooterSection($pdf, $revisi)
     {
         $currentY = $pdf->GetY();
         $pageHeight = $pdf->GetPageHeight();
@@ -306,14 +309,27 @@ class RevisiMahasiswaController extends Controller
         $pdf->SetX(120);
         $pdf->Cell(0, 5, "Semarang, " . Carbon::now()->format('d-m-Y'), 0, 1, 'L');
         $pdf->SetX(120);
-        $pdf->Cell(0, 5, "Pembimbing ", 0, 1, 'L');
+
+        $data = $revisi->dosen_nip;
+        $dosenQuery = revisi_mahasiswa::where('dosen_nip', $data)->with('dosen', 'bimbingan');
+
+        // Check if the 'bimbingan' relationship exists and get the filtered data
+        if ($dosenQuery->whereHas('bimbingan')->exists()) {
+            $dosen = $dosenQuery->get();
+            $pdf->Cell(0, 5, "Pembimbing", 0, 1, 'L');    
+        } else{
+            $pdf->Cell(0, 5, "Penguji", 0, 1, 'L');
+        }
+
+
+        
         // $pdf->Ln(30);
 
-        $dosenNip = $bimbinganData[0]->dosen_nip;
+        $dosenNip = $revisi->dosen_nip;
         $dosenName = Bimbingan::getDosenName($dosenNip);
 
         // Get the signature image path for the lecturer
-        $signatureImagePath = public_path('dist/img/' . $bimbinganData[0]->file_ttd); // Ganti ke file_ttd
+        $signatureImagePath = public_path('dist/img/' . $revisi->file_ttd); // Ganti ke file_ttd
         if (file_exists($signatureImagePath)) {
             // Menentukan ukuran gambar
             list($originalWidth, $originalHeight) = getimagesize($signatureImagePath);

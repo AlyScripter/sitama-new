@@ -29,7 +29,7 @@ class Dosen extends Model
 
     public function revisiMahasiswa()
     {
-        return $this->hasMany(RevisiMahasiswa::class, 'dosen_nip', 'dosen_nip');
+        return $this->hasMany(revisi_mahasiswa::class, 'dosen_nip', 'dosen_nip');
     }
 
     public function user()

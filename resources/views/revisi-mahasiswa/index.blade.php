@@ -148,7 +148,7 @@
                                     <tr>
                                         <th width ="20px">No</th>
                                         <th>Nama</th>
-                                        <th>Lembar Revisi</th>
+                                        <th width="250px">Lembar Revisi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -158,7 +158,7 @@
                                             <td>{{ $item->dosen_nama }}</td>
                                             <td class="text-center">
                                                 <a target="_blank"
-                                                    href="{{ route('revisi-mahasiswa.CetakLembarRevisi', $item->id) }}"
+                                                    href="{{ route('revisi-mahasiswa.CetakLembarRevisi', $item->dosen_nip) }}"
                                                     class="btn btn-sm btn-danger text-white"
                                                     style="text-decoration: none; color: inherit;">
                                                     <i class="fas fa-file-pdf mr-1"></i> Cetak Lembar Revisi
