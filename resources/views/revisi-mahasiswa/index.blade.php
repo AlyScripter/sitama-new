@@ -134,6 +134,7 @@
             </div>
         </div>
     </div>
+    @if($lembarCount == $lembarCountFull)
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -156,13 +157,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->dosen_nama }}</td>
-                                            <td class="text-center">
+                                            <td class="text-center">                                                
                                                 <a target="_blank"
                                                     href="{{ route('revisi-mahasiswa.CetakLembarRevisi', $item->dosen_nip) }}"
                                                     class="btn btn-sm btn-danger text-white"
                                                     style="text-decoration: none; color: inherit;">
                                                     <i class="fas fa-file-pdf mr-1"></i> Cetak Lembar Revisi
                                                 </a>
+                                                <!-- <p class="text-gray">Belum Bisa Mencetak Lembar Revisi</p> -->                                                
                                             </td>
                                         </tr>
                                     @endforeach
@@ -174,31 +176,31 @@
             </div>
         </div>
     </div>
-@endsection
-
-
-@foreach ($revisi as $s)
-    <div class="modal fade" id="modal-{{ $s->id }}" tabindex="-1" role="dialog"
-        aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">{{ $s->dokumen_syarat }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {{-- <p>{{ $dst->revisi_file_original }}</p> --}}
-                    <embed
-                        src="/stream-document/{{ encrypt(env('APP_FILE_SYARAT_TA_PATH') . $s->revisi_file) . '?dl=0&filename=' . $s->revisi_file_original }}&directory=draft_revisi"
-                        type="application/pdf" width="100%" height="400px">
-                    <hr>
+    @endif
+    
+    @foreach ($revisi as $s)
+        <div class="modal fade" id="modal-{{ $s->id }}" tabindex="-1" role="dialog"
+            aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">{{ $s->dokumen_syarat }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- <p>{{ $dst->revisi_file_original }}</p> --}}
+                        <embed
+                            src="/stream-document/{{ encrypt(env('APP_FILE_SYARAT_TA_PATH') . $s->revisi_file) . '?dl=0&filename=' . $s->revisi_file_original }}&directory=draft_revisi"
+                            type="application/pdf" width="100%" height="400px">
+                        <hr>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endforeach
+    @endforeach
+@endsection
 
 
 @push('js')
