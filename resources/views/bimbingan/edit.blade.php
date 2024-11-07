@@ -118,18 +118,9 @@
                                     <label>Tahun Akademik</label>
                                     <select name="tahun_akademik" class="form-control">
                                         <option disabled selected>Tahun Akademik</option>
-                                        <option value="2020/2021"
-                                            {{ $ta_mahasiswa->tahun_akademik == '2020/2021' ? 'selected' : '' }}>2020/2021
-                                        </option>
-                                        <option value="2021/2022"
-                                            {{ $ta_mahasiswa->tahun_akademik == '2021/2022' ? 'selected' : '' }}>2021/2022
-                                        </option>
-                                        <option value="2022/2023"
-                                            {{ $ta_mahasiswa->tahun_akademik == '2022/2023' ? 'selected' : '' }}>2022/2023
-                                        </option>
-                                        <option value="2023/2024"
-                                            {{ $ta_mahasiswa->tahun_akademik == '2023/2024' ? 'selected' : '' }}>2023/2024
-                                        </option>
+                                        @foreach($thn_akademik as $ta)
+                                            <option value="{{ $ta->ta }}">{{ $ta->ta }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

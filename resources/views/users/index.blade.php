@@ -25,11 +25,39 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">Data Pengguna</h3>
-                            <div class="card-tools">
+                            <!-- <h3 class="card-title">Data Pengguna</h3> -->
+                            <!-- <div class="card-tools">
                                 <a href="{{ route('manage-user.create') }}" class="btn btn-tool"><i
                                         class="fas fa-plus-circle"></i></a>
-                            </div>
+                            </div> -->
+                            <form action="{{ route('manage-user.index') }}" method="GET">
+                                @csrf
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-3 mb-md-0 mb-2">
+                                        <select class="custom-select" name="users" onchange="this.form.submit()">
+                                            <option value="">All Roles</option>
+                                            <option value="0" {{ request('users') === "0" ? 'selected' : '' }}>
+                                                Filter by Superadmin
+                                            </option>
+                                            <option value="1" {{ request('users') === "1" ? 'selected' : '' }}>
+                                                Filter by Admin
+                                            </option>
+                                            <option value="2" {{ request('users') === "2" ? 'selected' : '' }}>
+                                                Filter by Dosen
+                                            </option>
+                                            <option value="3" {{ request('users') === "3" ? 'selected' : '' }}>
+                                                Filter by Mahasiswa
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md mb-md-0 mb-2"></div>
+                                    <div class="card-tools">
+                                        <a href="{{ route('manage-user.create') }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-plus-circle"></i> Tambah Pengguna
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="card-body">
                             <table class="table table-bordered table-striped">
@@ -48,7 +76,7 @@
                                             <td>{{ $item->email }}</td>
                                             <td>
                                                 @foreach ($item->roles->pluck('name') as $role)
-                                                    {{ $role }}
+                                                    {{ $role }} 
                                                 @endforeach
                                             </td>
                                             <td>

@@ -35,17 +35,6 @@
                             <form action="{{ route('revisi-mahasiswa.index') }}" method="GET">
                                 @csrf
                                 <div class="row d-flex align-items-center">
-                                    <div class="col-md mb-md-0 mb-2">
-                                        <select class="custom-select" name="dosen" onchange="this.form.submit()">
-                                            <option value="">All Pembimbing / Penguji</option>
-                                            <option value="0" {{ request('dosen') === "0" ? 'selected' : '' }}>
-                                                Filter by Dosen Pembimbing
-                                            </option>
-                                            <option value="1" {{ request('dosen') === "1" ? 'selected' : '' }}>
-                                                Filter by Dosen Penguji
-                                            </option>
-                                        </select>
-                                    </div>
                                     <div class="col text-right">
                                         <div class="card-tools">
                                             <a href="{{ route('revisi-mahasiswa.create') }}"
@@ -76,9 +65,7 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->dosen->dosen_nama }}</td>
                                                     <td class="text-center">
-                                                        @if (!isset($item->revisi_file))
-                                                            <span class="badge badge-danger">Belum Upload</span>
-                                                        @else
+                                                        @if (isset($item->revisi_file))
                                                             {{-- <a href="{{ asset('storage/draft_revisi/' . $item->revisi_file) }}"
                                                                 target="_blank" class="btn btn-sm btn-success"><i
                                                                     class="fa fa-eye"></i></a> --}}
@@ -87,6 +74,10 @@
                                                                 class="btn btn-sm btn-success">
                                                                 <i class="fa fa-eye"></i>
                                                             </a>
+                                                        @else
+                                                            <div class="text-center">
+                                                                -
+                                                            </div>
                                                         @endif
                                                     </td>
                                                     <td>{{ $item->revisi_deskripsi }}</td>

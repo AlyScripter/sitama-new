@@ -27,8 +27,9 @@
                         <div class="card-header">
                             <h5 class="m-0"></h5>
                             <div class="card-tools">
-                                <a href="{{ route('manage-menu.create') }}" class="btn btn-tool"><i
-                                        class="fas fa-plus-circle"></i></a>
+                                <a href="{{ route('manage-menu.create') }}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-plus-circle"></i> Tambah Menu
+                                </a>
                             </div>
                         </div>
                         <div class="card-body">

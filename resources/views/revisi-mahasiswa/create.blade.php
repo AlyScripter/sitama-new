@@ -30,13 +30,9 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label>Pembimbing / Penguji <span class="text-danger">*</span></label>
+                                    <label>Penguji <span class="text-danger">*</span></label>
                                     <select class="custom-select @error('pembimbing')is-invalid @enderror" name="pembimbing">
-                                        <option selected>Pilih Pembimbing / Penguji</option>
-                                        @foreach ($dosen->dosen as $pembimbing)
-                                            <option value="{{ $pembimbing['dosen_nip'] }}">Pembimbing {{ $loop->iteration . ' - ' . $pembimbing['dosen_nama'] }}</option>
-                                        @endforeach
-                                
+                                        <option selected>Pilih Penguji</option>                                
                                         @foreach ($dosen->penguji as $penguji)
                                             <option value="{{ $penguji['dosen_nip_penguji'] }}">Penguji {{ $loop->iteration . ' - ' . $penguji['penguji_nama'] }}</option>
                                         @endforeach

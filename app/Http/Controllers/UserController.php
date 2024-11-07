@@ -23,9 +23,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    
+    public function index(Request $request)
     {
         $users = User::paginate(10);
+        // dd($users->role(''));
+        if ($request->filled('users')) {
+            if ($request->input('users') == "0") {
+                $users = User::role('superadmin')->paginate(10);
+            } elseif ($request->input('users') == "1") {
+                $users = User::role('admin')->paginate(10);
+            } elseif ($request->input('users') == "2") {
+                $users = User::role('dosen')->paginate(10);
+            } elseif ($request->input('users') == "3") {
+                $users = User::role('mahasiswa')->paginate(10);
+            }
+        }
+
         return view('users.index', compact('users'));
     }
 

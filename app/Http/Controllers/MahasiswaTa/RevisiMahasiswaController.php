@@ -26,33 +26,17 @@ class RevisiMahasiswaController extends Controller
     {
         $id = Auth::user()->id;
         $dataTa = Ta::dataTa($id)->mhs_nim;
-
         // Mulai dengan query builder
-        $revisi = revisi_mahasiswa::where('mhs_nim', $dataTa)->with('dosen', 'bimbingan');
-
-        // Periksa apakah ada parameter 'dosen' dan terapkan filter yang sesuai
-        if ($request->filled('dosen')) {
-            if ($request->input('dosen') == "0") {
-                // Tampilkan hanya Dosen Pembimbing (yang memiliki relasi dengan bimbingan)
-                $revisi->whereHas('bimbingan');
-            } elseif ($request->input('dosen') == "1") {
-                // Tampilkan hanya Dosen Penguji (yang tidak memiliki relasi dengan bimbingan)
-                $revisi->whereDoesntHave('bimbingan');
-            }
-        }
-
-        // Eksekusi query dan ambil data yang difilter
+        $revisi = revisi_mahasiswa::where('mhs_nim', $dataTa)->with('dosen');
         $revisi = $revisi->get();
-
+        // dd($revisi);
+        
         $lembar = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->where('mhs_nim', $dataTa)->get();
-
         $lembarCountFull = $lembar->select('revisi_status', 'dosen_nip')->count();
-        // dd($lembarCountFull);
         $lembarCount = $lembar->where('revisi_status', 1)->count('revisi_status');
 
         return view('revisi-mahasiswa.index', compact('revisi', 'lembar', 'lembarCount', 'lembarCountFull'));
     }
-
 
 
     /**
@@ -84,11 +68,16 @@ class RevisiMahasiswaController extends Controller
         $id = Auth::user()->id;
         $mahasiswa = Bimbingan::Mahasiswa($id);
         $mhs = $mahasiswa->mhs_nim;
-        
-        $file = $request->file('file');
-        $fileName = date('Ymdhis') . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/draft_revisi', $fileName);
-        $file_name_original = $file->getClientOriginalName();
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = date('Ymdhis') . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/draft_revisi', $fileName);
+            $file_name_original = $file->getClientOriginalName();
+        } else {
+            $fileName = null;
+            $file_name_original = null;
+        }
 
         $revisi_status = 0;
 
@@ -206,12 +195,23 @@ class RevisiMahasiswaController extends Controller
 
     public function CetakLembarRevisi($id)
     {
-        $revisi = dosen::with('revisiMahasiswa')->find($id);
-        $dosen = $revisi->revisiMahasiswa->value('id');
-        $mhs = revisi_mahasiswa::with('mahasiswa')->find($dosen);
+        $dosen_nip = dosen::with('revisiMahasiswa')->find($id)->dosen_nip;
+        // dd($dosen_nip);
         
-        $nim = $mhs->mhs_nim;
-        $nama = $mhs->mahasiswa->mhs_nama;
+        $id = Auth::user()->id;
+        $ta = Ta::dataTa($id);
+        $dataTa = $ta->mhs_nim;
+        
+        // $dosen = $revisi->revisiMahasiswa->value('id');
+        $mahasiswa = Bimbingan::Mahasiswa($id);
+        $revisi = revisi_mahasiswa::with('mahasiswa', 'dosen')->where('mhs_nim', $dataTa)->where('dosen_nip', $dosen_nip)->get();
+
+        // dd($mahasiswa);
+        // $revisi = $revisi->revisiMahasiswa->where('mhs_nim', $nim);
+        // dd($mhs);
+        $nim = $mahasiswa->mhs_nim;
+        // dd($nim);
+        $nama = $mahasiswa->mhs_nama;
         // dd($nama);
         $depan_jenjang = substr($nim, 0, 1);
         if ($depan_jenjang == '3')
@@ -273,7 +273,7 @@ class RevisiMahasiswaController extends Controller
         $pdf->SetWidths([10, 140, 40]); // Adjust widths as needed
         $pdf->Row(["No.", "Uraian", "Tandatangan Pembimbing"], [0, 0, 0]);
         // Loop through your bimbingan data
-        foreach ($revisi->revisiMahasiswa as $index => $item) {
+        foreach ($revisi as $index => $item) {
             // dd($index);
             $rowData = [
                 $index+1,
@@ -282,7 +282,7 @@ class RevisiMahasiswaController extends Controller
             ];
             // dd($revisi->dosen->file_ttd);
             // Get the signature image path
-            $signatureImagePath = public_path('dist/img/' . $revisi->file_ttd);
+            $signatureImagePath = public_path('dist/img/' . $item->dosen->file_ttd);
             $images = [null, null, $signatureImagePath];
             // dd($images);
             // $pdf()
@@ -314,7 +314,12 @@ class RevisiMahasiswaController extends Controller
         $pdf->Cell(0, 5, "Semarang, " . Carbon::now()->format('d-m-Y'), 0, 1, 'L');
         $pdf->SetX(120);
 
-        $data = $revisi->dosen_nip;
+        foreach ($revisi as $rvs => $item) {
+            # code...
+            $data = $item->dosen->dosen_nip;
+            $file_ttd = $item->dosen->file_ttd;
+            // dd($data);
+        }
         $dosenQuery = revisi_mahasiswa::where('dosen_nip', $data)->with('dosen', 'bimbingan');
 
         // Check if the 'bimbingan' relationship exists and get the filtered data
@@ -329,11 +334,10 @@ class RevisiMahasiswaController extends Controller
         
         // $pdf->Ln(30);
 
-        $dosenNip = $revisi->dosen_nip;
-        $dosenName = Bimbingan::getDosenName($dosenNip);
+        $dosenName = Bimbingan::getDosenName($data);
 
         // Get the signature image path for the lecturer
-        $signatureImagePath = public_path('dist/img/' . $revisi->file_ttd); // Ganti ke file_ttd
+        $signatureImagePath = public_path('dist/img/' . $file_ttd); // Ganti ke file_ttd
         if (file_exists($signatureImagePath)) {
             // Menentukan ukuran gambar
             list($originalWidth, $originalHeight) = getimagesize($signatureImagePath);
@@ -374,6 +378,6 @@ class RevisiMahasiswaController extends Controller
         if (($pageHeight - $bottomMargin - $pdf->GetY()) < $nipHeight) {
             $pdf->AddPage();
         }
-        $pdf->Cell(0, $nipHeight, "NIP. " . $dosenNip, 0, 1, 'L');
+        $pdf->Cell(0, $nipHeight, "NIP. " . $data, 0, 1, 'L');
     }
 }

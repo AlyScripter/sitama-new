@@ -148,13 +148,14 @@ class BimbinganController extends Controller
     {
         $ta_mahasiswa = Ta::findOrFail($ta_id);
         $dosen = Dosen::where("is_pembimbing", 1)->get();
+        $thn_akademik = DB::table('master_ta')->get();
 
         $bimbingan = DB::table('bimbingans')->where('ta_id', $ta_id)
             ->orderBy('urutan')
             ->get();
         $mhs = Bimbingan::mahasiswaAdmin();
 
-        return view('bimbingan.edit', compact('ta_mahasiswa', 'dosen', 'mhs', 'bimbingan'));
+        return view('bimbingan.edit', compact('ta_mahasiswa', 'dosen', 'mhs', 'bimbingan', 'thn_akademik'));
     }
 
     public function update(Request $request, $id)
