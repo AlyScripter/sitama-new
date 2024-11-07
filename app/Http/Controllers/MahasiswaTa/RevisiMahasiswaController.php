@@ -282,6 +282,10 @@ class RevisiMahasiswaController extends Controller
             ];
             // dd($revisi->dosen->file_ttd);
             // Get the signature image path
+            if (!$item->dosen->file_ttd || !file_exists(public_path('dist/img/' . $item->dosen->file_ttd))) {
+                return redirect()->route('revisi-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan');
+            }
+
             $signatureImagePath = public_path('dist/img/' . $item->dosen->file_ttd);
             $images = [null, null, $signatureImagePath];
             // dd($images);

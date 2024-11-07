@@ -399,6 +399,10 @@ class TaController extends Controller
         if (!$noSk) {
             return redirect()->route('ta.index')->with('error', 'Nomor SK tidak ditemukan.');
         }
+        
+        if (!$noSk->file_paraf || !file_exists(public_path('dist/img/' . $noSk->file_paraf))) {
+            return redirect()->route('ta.index')->with('error', 'File tanda tangan tidak ditemukan.');
+        }
 
         // $pdf = new CustomPdfAdmin('P', 'mm', 'A4');
         $pdf = new CustomPdfAdmin('P', 'mm', [210, 330]);

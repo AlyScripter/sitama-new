@@ -247,6 +247,14 @@ class BimbinganMahasiswaController extends Controller
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
 
         Carbon::setLocale('id');
+        
+        if (!$pembimbing[0]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[0]['ttd']))) {
+            return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[0]['nama']);
+        }
+
+        if (!$pembimbing[1]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[1]['ttd']))) {
+            return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
 
         $view = view("cetak-cetak.persetujuan-sidang", [
             "jenis" => $jenis,
@@ -341,6 +349,10 @@ class BimbinganMahasiswaController extends Controller
             ];
             // dd($bimbingan->file_ttd);
             // Get the signature image path
+            if (!$bimbingan->file_ttd || !file_exists(public_path('dist/img/' . $bimbingan->file_ttd))) {
+                return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan');
+            }
+
             $signatureImagePath = public_path('dist/img/' . $bimbingan->file_ttd);
             $images = [null, null, null, $signatureImagePath];
 

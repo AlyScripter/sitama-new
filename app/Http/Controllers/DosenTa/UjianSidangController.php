@@ -311,6 +311,11 @@ class UjianSidangController extends Controller
         $nama_bulan = $bulan_indonesia[$bulan];
         $tanggal_indonesia = $tanggal . ' ' . $nama_bulan . ' ' . $tahun;
 
+        $tanggal_sekarang = date('d-m-Y', strtotime(date("Y-m-d")));
+        list($tanggal2, $bulan2, $tahun2) = explode('-', $tanggal_sekarang);
+        $nama_bulan2 = $bulan_indonesia[$bulan2];
+        $tanggal_now = $tanggal2 . ' ' . $nama_bulan2 . ' ' . $tahun2;
+
         if ($hari_indonesia == 'Jumat') {
             $sesi_mulai = $infoujian->sesi_waktu_mulai_jumat;
             $sesi_selesai = $infoujian->sesi_waktu_selesai_jumat;
@@ -332,6 +337,10 @@ class UjianSidangController extends Controller
         // dd($noSk);
         if (!$noSk) {
             return redirect()->route('ta.index')->with('error', 'Nomor SK tidak ditemukan.');
+        }
+
+        if (!$noSk->file_paraf || !file_exists(public_path('dist/img/' . $noSk->file_paraf))) {
+            return redirect()->route('ta.index')->with('error', 'File tanda tangan tidak ditemukan.');
         }
 
         $pdf = new CustomPdf('P', 'mm', [210, 330]);
@@ -507,10 +516,31 @@ class UjianSidangController extends Controller
         $pdf->Cell(0, 7, 'Tugas ini supaya dijalankan dengan sebaik-baiknya dan hasilnya dilaporkan kepada Jurusan.', 0, 1);
 
         $pdf->Ln(3);
-        $pdf->Cell(0, 10, 'Semarang, 23 Agustus 2023', 0, 1, 'R');
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'Semarang,' . $tanggal_now, 0, 1);
 
-        $signaturePath = public_path('dist/img/ttd_kajur.png');
-        $pdf->Image($signaturePath, $pdf->GetX() + 120, $pdf->GetY(), 70, 45);
+        //ketua jurusan saja
+        // $pdf->Cell(120, 5, '', 0, 0);
+        // $pdf->Cell(0, 5, 'Ketua Jurusan Teknik Elektro', 0, 1);
+
+        //an ketua jurusan, sekretaris jurusan
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'a.n Ketua Jurusan Teknik Elektro', 0, 1);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'Sekretaris Jurusan Teknik Elektro', 0, 1);
+
+        $pdf->Ln(20);
+        $signaturePath = public_path('dist/img/' . $noSk->file_paraf);
+        // $pdf->Image($signaturePath, $pdf->GetX() + 110, $pdf->GetY(), 10, 10);
+        $pdf->Image($signaturePath, $pdf->GetX() + 140, $pdf->GetY() - 17, 15, 15);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, $noSk->nama_kajur, 0, 1);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'NIP. ' . $noSk->nip_kajur, 0, 1);
+
+        $pdf->SetY(-32);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->MultiCell(0, 5, 'Diserahkan ke Tim Penguji Tugas Akhir (lima orang) dan Pembimbing paling lambat tiga hari sebelum ujian, beserta naskah Tugas Akhir untuk Penguji.', 1, 'C');
 
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
@@ -590,6 +620,12 @@ class UjianSidangController extends Controller
         $no_surat_tugas = $skData->no_sk;
 
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
+
+        foreach ($data_nilai as $nilai) {
+            if (!$nilai->file_ttd || !file_exists(public_path('dist/img/' . $nilai->file_ttd))) {
+                return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $nilai->dosen_nama);
+            }
+        }
 
         $view = view("ujian-sidang.nilai-pembimbing", [
             'jenis' => $jenis[$info_sidang->prodi_ID],
@@ -691,6 +727,20 @@ class UjianSidangController extends Controller
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
 
         $bimbingans = DB::select("SELECT D.dosen_nama,D.file_ttd, B.* FROM bimbingans B JOIN dosen D ON B.dosen_nip = D.dosen_nip WHERE B.ta_id = " . $info_sidang->ta_id);
+        
+        foreach ($data_nilai as $nilai) {
+            if (!$nilai->file_ttd || !file_exists(public_path('dist/img/' . $nilai->file_ttd))) {
+                return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $nilai->dosen_nama);
+            }
+        }
+
+        if (!$bimbingans[0]->file_ttd || !file_exists(public_path('dist/img/' . $bimbingans[0]->file_ttd))) {
+            return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $bimbingans[0]->dosen_nama);
+        }
+        
+        if (!$info_sidang->sekre_ttd || !file_exists(public_path('dist/img/' . $info_sidang->sekre_ttd))) {
+            return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $info_sidang->sekre_nama);
+        }
 
         $view = view("ujian-sidang.nilai-penguji", [
             'jenis' => $jenis[$info_sidang->prodi_ID],
@@ -792,7 +842,6 @@ class UjianSidangController extends Controller
 
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
 
-
         //rekap ujian
         $pengujis = DB::select("SELECT 
                                     D.dosen_nama, 
@@ -847,6 +896,22 @@ class UjianSidangController extends Controller
             'data_nilai_penguji' => $data_nilai_penguji,
             'skData' => $skData
         ];
+
+        foreach ($data_nilai_penguji as $nilai) {
+            if (!$nilai->file_ttd || !file_exists(public_path('dist/img/' . $nilai->file_ttd))) {
+                return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $nilai->dosen_nama);
+            }
+        }
+
+        foreach (collect($data_nilai)->where('urutan', 1) as $nilai) {
+            if (!$nilai->file_ttd || !file_exists(public_path('dist/img/' . $nilai->file_ttd))) {
+                return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $nilai->dosen_nama);
+            }
+        }
+
+        if (!$info_sidang->sekre_ttd || !file_exists(public_path('dist/img/' . $info_sidang->sekre_ttd))) {
+            return redirect()->route('ujian-sidang.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $info_sidang->sekre_nama);
+        }
 
         $view = view("ujian-sidang.nilai-akhir", $params);
 
