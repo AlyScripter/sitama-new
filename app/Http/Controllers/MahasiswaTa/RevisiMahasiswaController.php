@@ -30,12 +30,10 @@ class RevisiMahasiswaController extends Controller
         $revisi = revisi_mahasiswa::where('mhs_nim', $dataTa)->with('dosen');
         $revisi = $revisi->get();
         // dd($revisi);
-        
-        $lembar = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->where('mhs_nim', $dataTa)->get();
-        $lembarCountFull = $lembar->select('revisi_status', 'dosen_nip')->count();
-        $lembarCount = $lembar->where('revisi_status', 1)->count('revisi_status');
 
-        return view('revisi-mahasiswa.index', compact('revisi', 'lembar', 'lembarCount', 'lembarCountFull'));
+        $lembar = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->where('mhs_nim', $dataTa)->get();
+
+        return view('revisi-mahasiswa.index', compact('revisi', 'lembar'));
     }
 
 

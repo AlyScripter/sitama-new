@@ -125,7 +125,6 @@
             </div>
         </div>
     </div>
-    @if($lembarCount == $lembarCountFull)
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -148,14 +147,17 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->dosen_nama }}</td>
-                                            <td class="text-center">                                                
+                                            <td class="text-center">
+                                                @if($lembar->where('dosen_nip', $item->dosen_nip)->where('revisi_status', 1)->count() >= $lembar->where('dosen_nip', $item->dosen_nip)->count())                                             
                                                 <a target="_blank"
                                                     href="{{ route('revisi-mahasiswa.CetakLembarRevisi', $item->dosen_nip) }}"
                                                     class="btn btn-sm btn-danger text-white"
                                                     style="text-decoration: none; color: inherit;">
                                                     <i class="fas fa-file-pdf mr-1"></i> Cetak Lembar Revisi
                                                 </a>
-                                                <!-- <p class="text-gray">Belum Bisa Mencetak Lembar Revisi</p> -->                                                
+                                                @else
+                                                    <p class="text-gray">-</p>                                                
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -167,7 +169,7 @@
             </div>
         </div>
     </div>
-    @endif
+    
     
     @foreach ($revisi as $s)
         <div class="modal fade" id="modal-{{ $s->id }}" tabindex="-1" role="dialog"
