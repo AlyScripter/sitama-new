@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+@section('title', 'Upload/Edit Syarat')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

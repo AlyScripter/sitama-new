@@ -18,6 +18,7 @@
 </style>
 @endpush
 @section('content')
+@section('title', 'Edit LogBook')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

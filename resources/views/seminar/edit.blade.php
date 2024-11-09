@@ -1,10 +1,11 @@
 @extends('layouts.app')
 @section('content')
+@section('title', 'Edit Jadwal Seminar')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6 text-uppercase">
-                <h4 class="m-0">Tambah Jadwal Seminar</h4>
+                <h4 class="m-0">Edit Jadwal Seminar</h4>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">

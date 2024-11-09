@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 @endpush
 @section('content')
-
+@section('title', 'Form Pendaftaran')
 <style>
      .judul {
             text-align: left;

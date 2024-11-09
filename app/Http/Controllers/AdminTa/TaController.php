@@ -603,7 +603,7 @@ class TaController extends Controller
         $pdf->SetY(-32);
         $pdf->SetFont('Arial', '', 10);
         $pdf->MultiCell(0, 5, 'Diserahkan ke Tim Penguji Tugas Akhir (lima orang) dan Pembimbing paling lambat tiga hari sebelum ujian, beserta naskah Tugas Akhir untuk Penguji.', 1, 'C');
-
+        $pdf->Output('Surat Tugas' . '.pdf', 'I');
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }

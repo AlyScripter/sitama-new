@@ -3,6 +3,7 @@
 @endsection
 
 @section('content')
+@section('title', 'Plotting Magang')
 <!-- Tampilkan pesan sukses -->
 
 <div class="content-header">

@@ -9,6 +9,8 @@
 @php
     use Carbon\Carbon;
 @endphp
+
+@section('title', 'LogBook Mahasiswa')
 <style>
         .label-span-group label {
             min-width: 150px; /* Sesuaikan sesuai kebutuhan */

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('') }}plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
 @section('content')
+@section('title', 'Nilai Mahasiswa')
 <style>
         .label-span-group {
             display: flex;

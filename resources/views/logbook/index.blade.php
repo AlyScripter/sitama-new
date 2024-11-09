@@ -10,7 +10,7 @@
 @endphp
 
 @section('content')
-
+@section('title', 'LogBook')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row">

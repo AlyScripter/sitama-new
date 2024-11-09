@@ -13,6 +13,7 @@
 
 
 @section('content')
+@section('title', 'Jadwal Seminar Magang')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">

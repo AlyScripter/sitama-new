@@ -2,11 +2,12 @@
 @push('css')
 @endpush
 @section('content')
+@section('title', 'Edit Menu')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 text-uppercase">
-                    <h4 class="m-0">Tambah Menu</h4>
+                    <h4 class="m-0">Edit Menu</h4>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">

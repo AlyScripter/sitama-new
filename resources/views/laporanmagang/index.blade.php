@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('') }}plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
 @section('content')
+@section('title', 'File Magang')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row">

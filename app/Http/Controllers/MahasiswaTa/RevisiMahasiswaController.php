@@ -289,6 +289,7 @@ class RevisiMahasiswaController extends Controller
             // dd($images);
             // $pdf()
             $pdf->Row($rowData, [0, 0, 0], $images);
+            $pdf->Output('Lembar Revisi ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($item->dosen->dosen_nama)) . '.pdf', 'I');
         }
 
         // Add some space after the table

@@ -19,6 +19,7 @@
 </style>
 @endpush
 @section('content')
+@section('title', 'Tambah LogBook')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

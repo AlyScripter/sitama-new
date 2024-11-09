@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+@section('title', 'Dashboard')
     @if (!isset($dataTa))
         <div class="content">
             <div class="container-fluid">

@@ -341,6 +341,7 @@ class BimbinganMahasiswaController extends Controller
 
         // Loop through your bimbingan data
         foreach ($bimbinganData as $index => $bimbingan) {
+            // dd($bimbingan);
             $rowData = [
                 $index + 1,
                 Carbon::parse($bimbingan->bimb_tgl)->format('d-m-Y'),
@@ -357,6 +358,9 @@ class BimbinganMahasiswaController extends Controller
             $images = [null, null, null, $signatureImagePath];
 
             $pdf->Row($rowData, [0, 0, 0, 0], $images);
+            $dosenNip = $bimbinganData[0]->dosen_nip;
+            $dosenName = Bimbingan::getDosenName($dosenNip);
+            $pdf->Output('Lembar Kontrol Bimbingan ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($dosenName)) . '.pdf', 'I');
         }
 
         // Add some space after the table

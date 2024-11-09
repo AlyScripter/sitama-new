@@ -2,6 +2,7 @@
 @push('css')
 @endpush
 @section('content')
+@section('title', 'Edit Role')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Tampilkan pesan sukses -->
-
+@section('title', 'Detail Persyaratan')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">

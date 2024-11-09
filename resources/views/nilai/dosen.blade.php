@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('') }}plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
 @section('content')
+@section('title', 'Penilaian Dosen')
 <style>
         .label-span-group label {
             min-width: 150px; /* Sesuaikan sesuai kebutuhan */

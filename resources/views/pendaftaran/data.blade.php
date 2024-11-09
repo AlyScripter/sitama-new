@@ -9,7 +9,7 @@
     use Carbon\Carbon;
 @endphp
 @section('content')
-
+@section('title', 'Data Mahasiswa')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@section('title', 'Edit Revisi')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

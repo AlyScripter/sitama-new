@@ -10,6 +10,8 @@
 @endphp
 
 @section('content')
+
+@section('title', 'Bimbingan Mahasiswa')
 <style>
         .label-span-group label {
             min-width: 150px; /* Sesuaikan sesuai kebutuhan */

@@ -19,6 +19,8 @@ use Carbon\Carbon;
 @endpush
 
 @section('content')
+
+@section('title', 'Data Ujian Sidang Tugas Akhir')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

@@ -1,3 +1,4 @@
+<title>Mahasiswa Bimbingan</title>
 @extends('layouts.app')
 
 @push('css')

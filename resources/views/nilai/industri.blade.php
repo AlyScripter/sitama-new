@@ -3,6 +3,7 @@
     use Carbon\Carbon;
 @endphp
 @section('content')
+@section('title', 'Penilaian Industri')
     <style>
         .label-span-group {
             display: flex;

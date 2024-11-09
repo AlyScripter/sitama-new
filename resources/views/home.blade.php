@@ -34,6 +34,8 @@
 @endpush
 
 @section('content')
+
+@section('title', 'Home')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

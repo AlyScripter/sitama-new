@@ -24,6 +24,8 @@
 @endphp
 
 @section('content')
+
+@section('title', 'Data Mahasiswa Magang')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">

@@ -16,6 +16,8 @@
 @endpush
 
 @section('content')
+
+@section('title', 'Statistik Penguji Sidang Tugas Akhir')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

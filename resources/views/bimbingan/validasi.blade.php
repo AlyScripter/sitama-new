@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+@section('title', 'Validasi Status Mahasiswa')
     <style>
         .label-span-group {
             display: flex;
