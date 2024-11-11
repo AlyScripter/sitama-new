@@ -36,6 +36,15 @@
                             <form action="{{ route('revisi-mahasiswa.index') }}" method="GET">
                                 @csrf
                                 <div class="row d-flex align-items-center">
+                                    <div class="col-2 text-left">
+                                        <div class="card-tools">
+                                            <a href="{{ route('revisi-dosen.create') }}"
+                                                class="btn btn-sm btn-success">
+                                                <i class="fas fa-plus-circle"></i>
+                                                Tambah Revisi
+                                            </a>
+                                        </div>
+                                    </div>
                                     <div class="col text-right">
                                         <div class="card-tools">
                                             <a href="{{ route('ujian-sidang.index') }}" class="btn btn-tool"><i
@@ -50,21 +59,20 @@
                                 <div class="col table-responsive">
                                     <table id="datatable-mhsbimb" class="table-striped table-bordered table-hover table">
                                         <thead>
-                                            <th>No</th>
-                                            <th>Dosen Pembimbing / Penguji</th>
-                                            <th>Revisi</th>
+                                            <th width="30px">No</th>
                                             <th>Deskripsi</th>
-                                            <th>Status</th>
-                                            <th>Aksi</th>
+                                            <th width="40px">Revisi</th>
+                                            <th width="50px">Status</th>
+                                            <th width="50px">Aksi</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($revisi as $item)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $item->dosen->dosen_nama }}</td>
+                                                    <td>{{ $item->revisi_deskripsi }}</td>
                                                     <td class="text-center">
                                                         @if (!isset($item->revisi_file))
-                                                            <span class="badge badge-danger">Belum Upload</span>
+                                                            <p>-</p>
                                                         @else
                                                             {{-- <a href="{{ asset('storage/draft_revisi/' . $item->revisi_file) }}"
                                                                 target="_blank" class="btn btn-sm btn-success"><i
@@ -76,7 +84,6 @@
                                                             </a>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $item->revisi_deskripsi }}</td>
                                                     <td>
                                                         @if ($item->revisi_status == 0)
                                                             <span class="badge badge-danger">Belum Diverifikasi</span>

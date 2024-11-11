@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col">
                     <div class="card card-primary card-outline">
-                        <div class="card-header">
+                        <!-- <div class="card-header">
                             <form action="{{ route('revisi-mahasiswa.index') }}" method="GET">
                                 @csrf
                                 <div class="row d-flex align-items-center">
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div> -->
                         <div class="card-body">
                             <div class="row">
                                 <div class="col table-responsive">
@@ -58,7 +58,6 @@
                                             <th>Revisi</th>
                                             <th>Deskripsi</th>
                                             <th>Status</th>
-                                            <th>Aksi</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($revisi as $item)
@@ -89,29 +88,6 @@
                                                             <span class="badge badge-success">Diverifikasi</span>
                                                         @else
                                                             Invalid status
-                                                        @endif
-                                                    </td>
-                                                    <td class="text-center">
-                                                        @if ($item->revisi_status == 0)
-                                                        <button type="button"
-                                                            class="btn btn-block btn-sm btn-outline-info"
-                                                            data-toggle="dropdown"><i class="fas fa-cog"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu" role="menu">
-                                                            <a class="dropdown-item text-warning"
-                                                                href="{{ route('revisi-mahasiswa.edit', $item->id) }}">
-                                                                <i class="fas fa-edit text-warning mr-2"></i>Edit</a>
-                                                            <div class="dropdown-divider"></div>
-                                                            <form method="POST"
-                                                                action="{{ route('revisi-mahasiswa.destroy', $item->id) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <a class="dropdown-item confirm-button text-danger"
-                                                                    href="#">
-                                                                    <i
-                                                                        class="fas fa-trash-alt text-danger mr-2"></i>Hapus</a>
-                                                            </form>
-                                                        </div>
                                                         @endif
                                                     </td>
                                                 </tr>
