@@ -289,14 +289,14 @@ class RevisiMahasiswaController extends Controller
             // dd($images);
             // $pdf()
             $pdf->Row($rowData, [0, 0, 0], $images);
-            $pdf->Output('Lembar Revisi ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($item->dosen->dosen_nama)) . '.pdf', 'I');
         }
-
+        
         // Add some space after the table
         $pdf->Ln(10); // Adjust as needed
-
+        
         // Add the footer section
         $this->addFooterSection($pdf, $revisi);
+        $pdf->Output('Lembar Revisi ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($item->dosen->dosen_nama)) . '.pdf', 'I');
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }
@@ -338,6 +338,7 @@ class RevisiMahasiswaController extends Controller
         // $pdf->Ln(30);
 
         $dosenName = Bimbingan::getDosenName($data);
+        // dd($dosenName);
 
         // Get the signature image path for the lecturer
         $signatureImagePath = public_path('dist/img/' . $file_ttd); // Ganti ke file_ttd

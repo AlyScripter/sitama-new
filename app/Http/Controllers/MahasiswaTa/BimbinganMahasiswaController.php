@@ -360,14 +360,14 @@ class BimbinganMahasiswaController extends Controller
             $pdf->Row($rowData, [0, 0, 0, 0], $images);
             $dosenNip = $bimbinganData[0]->dosen_nip;
             $dosenName = Bimbingan::getDosenName($dosenNip);
-            $pdf->Output('Lembar Kontrol Bimbingan ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($dosenName)) . '.pdf', 'I');
         }
-
+        
         // Add some space after the table
         $pdf->Ln(10); // Adjust as needed
-
+        
         // Add the footer section
         $this->addFooterSection($pdf, $bimbinganData, $sebagai);
+        $pdf->Output('Lembar Kontrol Bimbingan ' . ucwords(strtolower($nama)) . ' Dosen ' . ucwords(strtolower($dosenName)) . '.pdf', 'I');
 
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }
