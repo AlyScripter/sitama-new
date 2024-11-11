@@ -9,6 +9,15 @@ class revisi_mahasiswa extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'revisi_deskripsi',
+        'revisi_file',
+        'revisi_file_original',
+        'revisi_status',
+        'mhs_nim',
+        'dosen_nip',
+    ];
+
     public function dosen()
     {
         return $this->belongsTo(Dosen::class, 'dosen_nip', 'dosen_nip');
