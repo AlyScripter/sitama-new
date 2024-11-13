@@ -32,30 +32,31 @@
             <div class="row">
                 <div class="col">
                     <div class="card card-primary card-outline">
-                        <!-- <div class="card-header">
+                        <div class="card-header">
                             <form action="{{ route('revisi-mahasiswa.index') }}" method="GET">
                                 @csrf
                                 <div class="row d-flex align-items-center">
-                                    <div class="col text-right">
-                                        <div class="card-tools">
-                                            <a href="{{ route('revisi-mahasiswa.create') }}"
-                                                class="btn btn-sm btn-success">
-                                                <i class="fas fa-plus-circle"></i>
-                                                Tambah Revisi
-                                            </a>
-                                        </div>
+                                    <div class="col-md mb-md-0 mb-2">
+                                        <select class="custom-select" name="penguji" onchange="this.form.submit()">
+                                            <option value="">All Penguji</option>
+                                            @foreach ($dosen->penguji as $penguji)
+                                                <option value="{{ $penguji['dosen_nip_penguji'] }}"
+                                                    @if (request('penguji') == $penguji['dosen_nip_penguji']) selected @endif>Penguji
+                                                    {{ $loop->iteration . ' - ' . $penguji['penguji_nama'] }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </form>
-                        </div> -->
+                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col table-responsive">
-                                    <table id="" class="table-striped table-bordered table-hover table">                            
+                                    <table id="datatable-main" class="table-striped table-bordered table-hover table">                            
                                         <thead>
                                             <th>No</th>
-                                            <th>Dosen Pembimbing / Penguji</th>
-                                            <th>Revisi</th>
+                                            <th>Dosen Penguji</th>
+                                            <!-- <th>Revisi</th> -->
                                             <th>Deskripsi</th>
                                             <th>Status</th>
                                         </thead>
@@ -64,7 +65,7 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->dosen->dosen_nama }}</td>
-                                                    <td class="text-center">
+                                                    <!-- <td class="text-center">
                                                         @if (isset($item->revisi_file))
                                                             {{-- <a href="{{ asset('storage/draft_revisi/' . $item->revisi_file) }}"
                                                                 target="_blank" class="btn btn-sm btn-success"><i
@@ -79,7 +80,7 @@
                                                                 -
                                                             </div>
                                                         @endif
-                                                    </td>
+                                                    </td> -->
                                                     <td>{{ $item->revisi_deskripsi }}</td>
                                                     <td>
                                                         @if ($item->revisi_status == 0)
@@ -125,16 +126,12 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->dosen_nama }}</td>
                                             <td class="text-center">
-                                                @if($lembar->where('dosen_nip', $item->dosen_nip)->where('revisi_status', 1)->count() >= $lembar->where('dosen_nip', $item->dosen_nip)->count())                                             
                                                 <a target="_blank"
                                                     href="{{ route('revisi-mahasiswa.CetakLembarRevisi', $item->dosen_nip) }}"
                                                     class="btn btn-sm btn-danger text-white"
                                                     style="text-decoration: none; color: inherit;">
                                                     <i class="fas fa-file-pdf mr-1"></i> Cetak Lembar Revisi
                                                 </a>
-                                                @else
-                                                    <p class="text-gray">-</p>                                                
-                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

@@ -29,11 +29,18 @@ class RevisiMahasiswaController extends Controller
         // Mulai dengan query builder
         $revisi = revisi_mahasiswa::where('mhs_nim', $dataTa)->with('dosen');
         $revisi = $revisi->get();
-        // dd($revisi);
-
+        $dosen = collect(Ta::taSidang2())->where('mhs_nim', $dataTa)->first();
+        // foreach ($dosen->penguji as $penguji) {
+        //     # code...
+        //     dd($penguji['dosen_nip_penguji']);
+        // }
         $lembar = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->where('mhs_nim', $dataTa)->get();
+        
+        if ($request->filled('penguji')) {
+            $revisi = $revisi->where('dosen_nip', $request->input('penguji'));
+        }
 
-        return view('revisi-mahasiswa.index', compact('revisi', 'lembar'));
+        return view('revisi-mahasiswa.index', compact('revisi', 'dosen', 'lembar'));
     }
 
 
@@ -283,9 +290,13 @@ class RevisiMahasiswaController extends Controller
             if (!$item->dosen->file_ttd || !file_exists(public_path('dist/img/' . $item->dosen->file_ttd))) {
                 return redirect()->route('revisi-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan');
             }
-
-            $signatureImagePath = public_path('dist/img/' . $item->dosen->file_ttd);
-            $images = [null, null, $signatureImagePath];
+            // dd($revisi->where('revisi_status', 0));
+            if($item->revisi_status == 1) {
+                $signatureImagePath = public_path('dist/img/' . $item->dosen->file_ttd);
+                $images = [null, null, $signatureImagePath];
+            } else {
+                $images = [null, null, null];
+            }
             // dd($images);
             // $pdf()
             $pdf->Row($rowData, [0, 0, 0], $images);
@@ -323,15 +334,8 @@ class RevisiMahasiswaController extends Controller
             $file_ttd = $item->dosen->file_ttd;
             // dd($data);
         }
-        $dosenQuery = revisi_mahasiswa::where('dosen_nip', $data)->with('dosen', 'bimbingan');
-
-        // Check if the 'bimbingan' relationship exists and get the filtered data
-        if ($dosenQuery->whereHas('bimbingan')->exists()) {
-            $dosen = $dosenQuery->get();
-            $pdf->Cell(0, 5, "Pembimbing", 0, 1, 'L');    
-        } else{
-            $pdf->Cell(0, 5, "Penguji", 0, 1, 'L');
-        }
+        
+        $pdf->Cell(0, 5, "Penguji", 0, 1, 'L');
 
 
         
@@ -341,7 +345,16 @@ class RevisiMahasiswaController extends Controller
         // dd($dosenName);
 
         // Get the signature image path for the lecturer
-        $signatureImagePath = public_path('dist/img/' . $file_ttd); // Ganti ke file_ttd
+        $id = Auth::user()->id;
+        $dataTa = Ta::dataTa($id)->mhs_nim;
+        $lembar = DB::table('revisi_mahasiswas')->join('dosen', 'revisi_mahasiswas.dosen_nip', '=', 'dosen.dosen_nip')->where('mhs_nim', $dataTa)->get();
+        foreach ($revisi as $key => $item) {
+            if($lembar->where('dosen_nip', $item->dosen_nip)->where('revisi_status', 1)->count() >= $lembar->where('dosen_nip', $item->dosen_nip)->count()) {
+                $signatureImagePath = public_path('dist/img/' . $file_ttd); // Ganti ke file_ttd
+            } else {
+                $signatureImagePath = null;
+            }
+        }
         if (file_exists($signatureImagePath)) {
             // Menentukan ukuran gambar
             list($originalWidth, $originalHeight) = getimagesize($signatureImagePath);

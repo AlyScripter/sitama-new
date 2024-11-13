@@ -44,6 +44,7 @@ class BimbinganMahasiswaController extends Controller
             $masterJumlah = DB::table('bimbingan_counts')->value('bimbingan_counts.total_bimbingan');
 
             $mahasiswa = Bimbingan::Mahasiswa($id);
+            // dd($mahasiswa);
 
             if ($request->filled('pembimbing')) {
                 $logCollect = $logCollect->where('dosen_nip', $request->input('pembimbing'));
