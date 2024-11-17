@@ -61,7 +61,7 @@
                                         <thead>
                                             <th width="30px">No</th>
                                             <th>Deskripsi</th>
-                                            <th width="40px">Revisi</th>
+                                            <!-- <th width="40px">Revisi</th> -->
                                             <th width="50px">Status</th>
                                             <th width="50px">Aksi</th>
                                         </thead>
@@ -70,7 +70,7 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->revisi_deskripsi }}</td>
-                                                    <td class="text-center">
+                                                    <!-- <td class="text-center">
                                                         @if (!isset($item->revisi_file))
                                                             <p>-</p>
                                                         @else
@@ -83,7 +83,7 @@
                                                                 <i class="fa fa-eye"></i>
                                                             </a>
                                                         @endif
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         @if ($item->revisi_status == 0)
                                                             <span class="badge badge-danger">Belum Diverifikasi</span>
@@ -121,7 +121,7 @@
     </div>
 @endsection
 
-
+<!-- 
 @foreach ($revisi as $s)
     <div class="modal fade" id="modal-{{ $s->id }}" tabindex="-1" role="dialog"
         aria-labelledby="modalLabel" aria-hidden="true">
@@ -143,7 +143,7 @@
             </div>
         </div>
     </div>
-@endforeach
+@endforeach -->
 
 
 @push('js')

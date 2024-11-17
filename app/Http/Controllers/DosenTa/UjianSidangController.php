@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\KodeProdi;
 use App\Models\Ta;
 use App\Models\TaSidang;
+use App\Models\revisi_mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\UjianSidang;
 use Carbon\Carbon;
@@ -63,6 +64,13 @@ class UjianSidangController extends Controller
         }
 
         $kode_prodi = KodeProdi::all();
+
+        $revisi = revisi_mahasiswa::with('dosen', 'bimbingan');
+        $revisi = $revisi->get();
+        foreach ($ta_mahasiswa as $key) {
+            # code...
+        }
+        // dd($ta_mahasiswa);
 
         return view('ujian-sidang.index', compact('ta_mahasiswa', 'userNip', 'kode_prodi'));
     }

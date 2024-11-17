@@ -8,6 +8,7 @@ use App\Models\Dosen;
 use App\Models\User;
 use App\Models\revisi_mahasiswa;
 use App\Models\Bimbingan;
+use App\Models\UjianSidang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -19,15 +20,7 @@ class RevisiDosenController extends Controller
      */
     public function index(Request $request)
     {
-        $id = Auth::user()->id;
-        $dataTa = User::with('dosen')->find($id)->dosen->dosen_nip;
-        // dd($dataTa);
-        // Mulai dengan query builder
-        $revisi = revisi_mahasiswa::with('dosen', 'bimbingan')->where('dosen_nip', $dataTa);
-        // Eksekusi query dan ambil data yang difilter
-        $revisi = $revisi->get();
-
-        return view('revisi-dosen.index', compact('revisi'));
+        
     }
 
     /**
@@ -107,9 +100,17 @@ class RevisiDosenController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(revisi_mahasiswa $revisi_mahasiswa)
+    public function show($id, Request $request)
     {
-        //
+        $mhs_nim = (int)$id;
+        $id = Auth::user()->id;
+        $dataTa = User::with('dosen')->find($id)->dosen->dosen_nip;
+        $revisi = revisi_mahasiswa::with('dosen', 'bimbingan')->where('dosen_nip', $dataTa)->where('mhs_nim', $mhs_nim);
+        // dd($dataTa);
+        // Eksekusi query dan ambil data yang difilter
+        $revisi = $revisi->get();
+
+        return view('revisi-dosen.index', compact('revisi'));
     }
 
     /**
