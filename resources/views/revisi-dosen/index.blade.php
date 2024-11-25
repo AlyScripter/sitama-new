@@ -38,7 +38,7 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-2 text-left">
                                         <div class="card-tools">
-                                            <a href="{{ route('revisi-dosen.create') }}"
+                                            <a href="{{ route('create-revisi-dosen' , $mhs_nim)}}"
                                                 class="btn btn-sm btn-success">
                                                 <i class="fas fa-plus-circle"></i>
                                                 Tambah Revisi
@@ -63,7 +63,7 @@
                                             <th>Deskripsi</th>
                                             <!-- <th width="40px">Revisi</th> -->
                                             <th width="50px">Status</th>
-                                            <th width="50px">Aksi</th>
+                                            <th width="70px">Aksi</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($revisi as $item)
@@ -95,16 +95,28 @@
                                                     </td>
                                                     <td class="text-center">
                                                         @if ($item->revisi_status == 0)
-                                                            <form
-                                                                action="{{ route('setujui-revisi', $item->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <button
-                                                                    class="confirm-verif btn btn-block btn-sm btn-success my-tooltip top">
-                                                                    <i class="fa fa-check"></i>
-                                                                    <span class="tooltiptext">Validasi Revisi</span>
-                                                                </button>
-                                                            </form>
+                                                            <div class="row">
+                                                                <form class="col-7"
+                                                                    action="{{ route('setujui-revisi', $item->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <button
+                                                                        class="confirm-verif btn btn-block btn-sm btn-success my-tooltip top">
+                                                                        <i class="fa fa-check"></i>
+                                                                        <span class="tooltiptext">Validasi Revisi</span>
+                                                                    </button>
+                                                                </form>
+                                                                <form class="col-5"
+                                                                    action="{{ route('revisi-dosen.destroy', $item->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button
+                                                                        class="btn btn-sm btn-danger confirm-button">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         @endif
                                                     </td>
                                                 </tr>
