@@ -24,10 +24,10 @@
                         <div class="card-header">
                             <h5 class="card-title m-0"></h5>
                             <div class="card-tools">
-                                <a href="{{ route('revisi-dosen.index') }}" class="btn btn-tool"><i class="fas fa-arrow-alt-circle-left"></i></a>
+                                <a href="{{ route('revisi-dosen.show', $mhs_nim) }}" class="btn btn-tool"><i class="fas fa-arrow-alt-circle-left"></i></a>
                             </div>
                         </div>
-                        <form action="{{ route('revisi-dosen.store') }}" method="POST" enctype="multipart/form-data" id="deskripsiForm">
+                        <form action="{{ route('store-revisi-dosen', $mhs_nim) }}" method="POST" enctype="multipart/form-data" id="deskripsiForm">
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">

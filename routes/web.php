@@ -167,7 +167,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('sidang-tugas-akhir/surat-tugas', [SidangTaController::class, 'suratTugas']);
     Route::resource('sidang-tugas-akhir', SidangTaController::class);
-    Route::get('upload-lembar-pengesahan', [SidangTaController::class, 'upload_lembar_pengesahan']);
+    Route::get('cetak-lembar-pengesahan', [SidangTaController::class, 'cetak_lembar_pengesahan']);
     Route::post('sidang-tugas-akhir/upload-lembar', [SidangTaController::class, 'upload_lembar']);
 
     // Dosen TA
@@ -193,7 +193,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mhsbimbingan/{ta_id}', [MahasiswaBimbinganController::class, 'pembimbingan'])->name('mhsbimbingan.pembimbingan');
     Route::resource('mhsbimbingan', MahasiswaBimbinganController::class);
 
-    Route::resource('revisi-dosen', RevisiDosenController::class);
+    // Route::get('revisi-dosen/{revisi-dosen}', [RevisiDosenController::class, 'show'])->name('revisi-dosen.show');
+    Route::get('revisi-dosen/{id}/create', [RevisiDosenController::class, 'create'])->name('create-revisi-dosen');
+    Route::delete('revisi-dosen/{revisi_mahasiswa}', [RevisiDosenController::class, 'destroy'])->name('revisi-dosen.destroy');
+    Route::resource('revisi-dosen', RevisiDosenController::class)->except(['create', 'store', 'destroy']);
+    Route::post('revisi-dosen/{id}/store', [RevisiDosenController::class, 'store'])->name('store-revisi-dosen');
     Route::post('/setujui-revisi/{id}', [RevisiDosenController::class, 'setujuiRevisi'])->name('setujui-revisi');
 
     Route::get('dbbackup', [DBBackupController::class, 'DBDataBackup']);

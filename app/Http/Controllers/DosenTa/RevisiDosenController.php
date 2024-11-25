@@ -26,9 +26,10 @@ class RevisiDosenController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($mhs_nim)
     {   
         // dd($dataTa);
+        // dd((int)$mhs_nim);
         $dataTa = revisi_mahasiswa::value('mhs_nim');
         // $dataTa = Ta::dataTa($id)->mhs_nim;
         $revisi = revisi_mahasiswa::get();
@@ -37,21 +38,20 @@ class RevisiDosenController extends Controller
         $dosen = collect(Ta::taSidang2())->where('mhs_nim', $dataTa)->first();
 
         //  dd($dosen);
-        return view('revisi-dosen.create', compact('dosen'));
+        return view('revisi-dosen.create', compact('dosen', 'mhs_nim'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'file_name' => 'required|mimetypes:application/pdf|max:2048'
         ]);
 
-        $id = Auth::user()->id;
-        $mahasiswa = Bimbingan::Mahasiswa($id);
-        $mhs = revisi_mahasiswa::value('mhs_nim');
+        // dd($id);
+        $mhs = (int)$id;
         // $mhs = $mahasiswa->mhs_nim;
 
         if ($request->hasFile('file')) {
@@ -94,7 +94,7 @@ class RevisiDosenController extends Controller
         //     'dosen_nip' => $dosen_nip,
         // ]);
 
-        return redirect('revisi-dosen');
+        return redirect('revisi-dosen/'. $mhs);
     }
 
     /**
@@ -110,7 +110,8 @@ class RevisiDosenController extends Controller
         // Eksekusi query dan ambil data yang difilter
         $revisi = $revisi->get();
 
-        return view('revisi-dosen.index', compact('revisi'));
+        return view('revisi-dosen.index', compact('revisi', 'mhs_nim'));
+        return redirect()->route('create-revisi-dosen', ['mhs_nim' => $mhs_nim]);
     }
 
     /**
@@ -188,20 +189,30 @@ class RevisiDosenController extends Controller
     public function destroy(revisi_mahasiswa $revisi_mahasiswa)
     {
         try {
-            $revisi = revisi_mahasiswa::findorfail($revisi_mahasiswa->id);
-
-            $fileLama = public_path('storage/draft_revisi/' . $revisi->revisi_file);
-            if (file_exists($fileLama)) {
-                unlink($fileLama);
+            $revisi = revisi_mahasiswa::findOrFail($revisi_mahasiswa->id);
+            // Cari data revisi berdasarkan ID yang diberikan
+    
+            // Cek apakah revisi memiliki file yang terkait
+            if ($revisi->revisi_file) {
+                // Hapus file dari storage
+                $filePath = public_path('storage/draft_revisi/' . $revisi->revisi_file);
+                if (file_exists($filePath)) {
+                    unlink($filePath);  // Menghapus file yang ada
+                }
             }
-
+    
+            // Hapus data revisi dari database
             $revisi->delete();
-
-            toastr()->success('Log berhasil dihapus');
-            return redirect()->route('revisi-dosen.index');
-        } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
-            return redirect()->route('revisi-dosen.index');
+    
+            // Menampilkan pesan sukses
+            toastr()->success('Revisi berhasil dihapus');
+    
+            // Redirect ke halaman yang sesuai, bisa ke halaman revisi mahasiswa
+            return redirect()->route('revisi-dosen.show', $revisi->mhs_nim);
+        } catch (\Exception $e) {
+            // Menangani error jika terjadi masalah saat penghapusan
+            toastr()->error('Ada masalah di server: ' . $e->getMessage());
+            return redirect()->route('revisi-dosen.show', $revisi->mhs_nim);
         }
     }
 
@@ -221,10 +232,10 @@ class RevisiDosenController extends Controller
             // dd($revisi);
     
             toastr()->success('Berhasil diverifikasi');
-            return redirect()->route('revisi-dosen.index', $id);
+            return redirect()->route('revisi-dosen.show', $revisi_mahasiswa->mhs_nim);
         } catch (\Exception $e) {
             toastr()->error('Ada masalah di server');
-            return redirect()->route('revisi-dosen.index');
+            return redirect()->route('revisi-dosen.show', $revisi_mahasiswa->mhs_nim);
         }
     }
 }

@@ -198,7 +198,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-3">
-                                        <a href="{{ url('/upload-lembar-pengesahan') }}" class="btn btn-primary">Upload Lembar Pengesahan</a>
+                                        <a href="{{ url('/cetak-lembar-pengesahan') }}" class="btn btn-danger">Cetak Lembar Pengesahan</a>
                                     </div>
                                 @elseif ($taSidang->status_lulus == 2)
                                     <div class="row">
