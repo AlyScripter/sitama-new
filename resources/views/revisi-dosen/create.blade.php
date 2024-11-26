@@ -32,6 +32,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Deskripsi <span class="text-danger">*</span></label>
+                                    <p class="text-gray font-italic">Untuk menambahkan dua revisi atau lebih gunakan enter</p>
                                     <textarea id="deskripsiInput" name="deskripsi" class="form-control @error('desk')is-invalid @enderror" placeholder="Masukkan Deskripsi" rows="6" style="resize: none;"></textarea>
                                     @error('desk')
                                         <div class="invalid-feedback" role="alert">

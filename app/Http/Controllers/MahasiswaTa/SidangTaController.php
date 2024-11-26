@@ -6,11 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Bimbingan;
 use App\Models\Ta;
 use App\Models\TaSidang;
+use App\Models\mahasiswa;
+use App\Models\KodeProdi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use Mpdf;
+use Mpdf\Mpdf as MpdfMpdf;
 
 // Mahasiswa
 class SidangTaController extends Controller
@@ -131,8 +137,8 @@ class SidangTaController extends Controller
         if (!$pembimbing[1]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[1]['ttd']))) {
             return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
         }
-
-        $view = view("cetak-cetak.persetujuan-sidang", [
+        
+        $view = view("cetak-cetak.lembar-pengesahan", [
             "jenis" => $jenis,
             "prodi_id" => $prodi_id,
             "prodi_nama" => $prodi->program_studi,
@@ -145,7 +151,7 @@ class SidangTaController extends Controller
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Persetujuan Sidang ' . ucwords(strtolower($mhs->mhs_nama)) . '.pdf', 'I');
+        $mpdf->Output('Lembar Pengesahan ' . ucwords(strtolower($mhs->mhs_nama)) . '.pdf', 'I');
 
         //echo $view;
     }
