@@ -102,7 +102,32 @@ class SidangTaController extends Controller
         $prodi_id = $mhs->prodi_ID;
         $ta = DB::selectOne("SELECT * FROM tas WHERE mhs_nim = '" . $mhs->mhs_nim . "'");
         $prodi = KodeProdi::where("prodi_ID", $prodi_id)->first();
+        
+        $infoujian = Ta::dataujian($ta->ta_id);
+        // dd($infoujian);
 
+        $datamhs = Ta::where('ta_id', $ta->ta_id)->first();
+        $nim = $mhs->mhs_nim;
+        $depan_jenjang = substr($nim, 0, 1);
+        if ($depan_jenjang == '3')
+            $jen = "D3";
+        elseif ($depan_jenjang == '4')
+            $jen = "D4";
+
+        $belakang_jenjang = substr($nim, 1, 2);
+        if ($belakang_jenjang == '33') {
+            $prod = "TI";
+            $kelasnya = "4";
+        } elseif ($belakang_jenjang == '34') {
+            $prod = "IK";
+            $kelasnya = "3";
+        }
+
+        $kode_prodi = $jen . $prod;
+
+        $tahunAjaran = Ta::CekTahunAjaran();
+        $noSk = Ta::NoSk($tahunAjaran->ta, $kode_prodi);
+        // dd($noSk);
         $temp = [];
         foreach ($ta_mhs->pluck('mhs_nim') as $row) {
             $temp[] = $row;
@@ -123,19 +148,36 @@ class SidangTaController extends Controller
                 "ttd" => $row->file_ttd
             ];
         }
+        // dd($infoujian);
 
         $tgl = DB::selectOne("SELECT MAX(bimb_tgl) tgl FROM bimbingan_log WHERE bimbingan_id IN (" . implode(",", $bimb_id) . ")");
 
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
 
         Carbon::setLocale('id');
-        
+        // dd($noSk);
         if (!$pembimbing[0]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[0]['ttd']))) {
-            return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[0]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[0]['nama']);
         }
 
         if (!$pembimbing[1]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[1]['ttd']))) {
-            return redirect()->route('bimbingan-mahasiswa.index')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
+
+        if (!$infoujian->penguji1_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji1_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
+
+        if (!$infoujian->penguji2_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji2_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
+
+        if (!$infoujian->penguji3_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji3_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
+
+        if (!$noSk->file_ttd || !file_exists(public_path('dist/img/' . $noSk->file_ttd))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
         }
         
         $view = view("cetak-cetak.lembar-pengesahan", [
@@ -145,8 +187,11 @@ class SidangTaController extends Controller
             "mahasiswa" => $mahasiswa,
             "judul_ta" => $ta->ta_judul,
             "tanggal_approve" => Carbon::parse($tgl->tgl)->translatedFormat('j F Y'),
-            "pembimbing" => $pembimbing
+            "pembimbing" => $pembimbing,
+            "infoujian" => $infoujian,
+            "infokajur" => $noSk,
         ]);
+        
         $mpdf = new MpdfMpdf();
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);

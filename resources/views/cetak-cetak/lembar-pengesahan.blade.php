@@ -119,7 +119,7 @@ function nim2kelas($nim)
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
-                        height="72">
+                        height="72" width="150">
                     <br>
                     {{ $pembimbing[0]['nama'] }}<br>
                     NIP. {{ $pembimbing[0]['nip'] }}<br>
@@ -131,7 +131,7 @@ function nim2kelas($nim)
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
-                        height="72">
+                        height="72" width="150">
                     <br>
                     {{ $pembimbing[1]['nama'] }}<br>
                     NIP. {{ $pembimbing[1]['nip'] }}<br>
@@ -146,11 +146,11 @@ function nim2kelas($nim)
                     Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
+                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_paraf }}"
                         height="72">
                     <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
+                    {{ $infokajur->nama_kajur }}<br>
+                    NIP. {{ $infokajur->nip_kajur }}<br>
                 </td>
             </tr>
         </table>
@@ -187,31 +187,31 @@ function nim2kelas($nim)
                     Penguji I,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
-                        height="72">
+                    <img src="{{ asset('dist/img') . '/' . $infoujian->penguji1_ttd_path }}"
+                        height="72" width="150">
                     <br>
-                    {{ $pembimbing[0]['nama'] }}<br>
-                    NIP. {{ $pembimbing[0]['nip'] }}<br>
+                    {{ $infoujian->penguji1_nama }}<br>
+                    NIP. {{ $infoujian->penguji1_nip }}<br>
                 </td>
                 <td>
                     Penguji II,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
-                        height="72">
+                    <img src="{{ asset('dist/img') . '/' . $infoujian->penguji2_ttd_path }}"
+                        height="72" width="150">
                     <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
+                    {{ $infoujian->penguji2_nama }}<br>
+                    NIP. {{ $infoujian->penguji2_nip }}<br>
                 </td>
                 <td>
                     Penguji II,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
-                        height="72">
+                    <img src="{{ asset('dist/img') . '/' . $infoujian->penguji3_ttd_path }}"
+                        height="72" width="150">
                     <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
+                    {{ $infoujian->penguji3_nama }}<br>
+                    NIP. {{ $infoujian->penguji3_nip }}<br>
                 </td>
             </tr>
         </table>
@@ -223,114 +223,11 @@ function nim2kelas($nim)
                     Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
+                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_paraf }}"
                         height="72">
                     <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <table cellpadding="5" cellspacing="0" width="100%" class="main-table">
-        <thead>
-            <tr class="first-row">
-                <td rowspan="4" style="text-align: center; width: 20%;" class="first-col">
-                    <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/logo-polines-bw.png" width="100"> -->
-                     <img src="{{ asset('dist/img/logo-polines-bw.png') }}" width="100">
-                </td>
-                <td rowspan="4" style="text-align: center">
-                    <h1>
-                        SURAT KETERANGAN SIAP
-                        <br>
-                        UJIAN {{ strtoupper($jenis[$prodi_id]) }}
-                    </h1>
-                </td>
-                <td>
-                    <b>No. FPM</b>
-                </td>
-                <td>
-                    7.5.18/L6
-                </td>
-            </tr>
-            <tr>
-                <td><b>Revisi</b></td>
-                <td>2</td>
-            </tr>
-            <tr>
-                <td><b>Tanggal</b></td>
-                <td>1 Juli 2010</td>
-            </tr>
-            <tr>
-                <td><b>Halaman</b></td>
-                <td>1/1</td>
-            </tr>
-        </thead>
-    </table>
-
-    <div style="border: 3px solid black; padding: 10px; height: 800px;">
-        <h2 style="text-align: center; margin-bottom: 20px;">SURAT KETERANGAN SIAP<br>UJIAN {{ strtoupper($jenis[$prodi_id]) }}</h2>
-        Kepada<br>
-        Yth. Ketua Program Studi {{ $prodi_nama }}<br>
-        Politeknik Negeri Semarang<br>
-        <br>
-        Yang bertanda tangan di bawah ini, Pembimbing I dan Pembimbing II menerangkan bahwa:
-        <table cellpadding="5" cellspacing="0" width="100%" class="not-main-table">
-            <thead>
-                <tr class="first-row">
-                    <th class="first-col">No</th>
-                    <th>Nama</th>
-                    <th>NIM</th>
-                    <th>Kelas</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($mahasiswa as $row)
-                    <tr>
-                        <td style="text-align: center;" class="first-col">{{ $loop->iteration }}</td>
-                        <td>{{ ucwords(strtolower($row->mhs_nama)) }}</td>
-                        <td style="text-align: center;">{{ $row->mhs_nim }}</td>
-                        <td style="text-align: center;">{{ nim2kelas($row->mhs_nim) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        Dengan judul {{ strtolower($jenis[$prodi_id]) }}:<br>
-        <br>
-        <div style="text-align: center; font-weight: bold; line-height: 150%">
-            "{{ $judul_ta }}"
-        </div>
-        <br>
-        Benar-benar telah menyelesaikan pembuatan {{ strtolower($jenis[$prodi_id]) }} dan siap untuk melakukan ujian
-        wawancara {{ strtolower($jenis[$prodi_id]) }}.
-        <br>
-        <br>
-        <br>
-        <br>
-        <table cellspacing="0" width="100%">
-            <tr>
-                <td style="width: 5%">
-                </td>
-                <td style="width: 45%">
-                    <br>
-                    Pembimbing I,<br>
-                    <br>
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
-                        height="72">
-                    <br>
-                    {{ $pembimbing[0]['nama'] }}<br>
-                    NIP. {{ $pembimbing[0]['nip'] }}<br>
-                </td>
-                <td>
-                    Semarang, {{ $tanggal_approve }}<br>
-                    Pembimbing II,<br>
-                    <br>
-                    <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
-                        height="72">
-                    <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
+                    {{ $infokajur->nama_kajur }}<br>
+                    NIP. {{ $infokajur->nip_kajur }}<br>
                 </td>
             </tr>
         </table>
