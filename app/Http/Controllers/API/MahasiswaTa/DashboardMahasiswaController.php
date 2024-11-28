@@ -18,32 +18,35 @@ class DashboardMahasiswaController extends Controller
         $id = Auth::user()->id;
         $dataTa = Ta::dataTa($id);
         $mahasiswa = Bimbingan::Mahasiswa($id);
-
+        
         return response()->json([
-            'dataTa' => $dataTa,
-            'mahasiswa' => $mahasiswa
+            'success' => true,
+            'data' => [
+                'mahasiswa' => $mahasiswa,
+                'dataTa' => $dataTa
+            ]
         ]);
     }
 
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'judul_ta' => 'required'
         ]);
 
         if ($validator->fails()) {
-            toastr()->error('Judul Tugas Akhir gagal ditambah </br> Periksa kembali data anda');
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $id = Auth::user()->id;
         $nim = Bimbingan::Mahasiswa($id)->mhs_nim;
         $dataTa = Ta::dataTa($id);
 
-        $thnAkademik = (date("Y") - 1) . "/" . date("Y");
+        $thnAkademik = DB::table('master_ta')->select('ta')->where('status', 1)->value('ta');
 
         try {
             if (!isset($dataTa)) {
@@ -61,27 +64,37 @@ class DashboardMahasiswaController extends Controller
                 ]);
 
                 if ($request->post('tim-id')) {
-                    $insert = new Ta();
-                    $insert->mhs_nim = $request->post('tim-id');
-                    $insert->ta_judul = $request->judul_ta;
-                    $insert->tahun_akademik = $thnAkademik;
-                    $insert->save();
+                    $teamInsert = new Ta();
+                    $teamInsert->mhs_nim = $request->post('tim-id');
+                    $teamInsert->ta_judul = $request->judul_ta;
+                    $teamInsert->tahun_akademik = $thnAkademik;
+                    $teamInsert->save();
+
                     DB::table('tas_mahasiswa')->insert([
-                        "ta_id" => $ta_id,
+                        "ta_id" => $teamInsert->ta_id,
                         "mhs_nim" => $request->post('tim-id')
                     ]);
                 }
 
-                toastr()->success('Judul Tugas Akhir berhasil disimpan');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Judul Tugas Akhir berhasil disimpan'
+                ]);
             } else {
-                toastr()->warning('Judul Tugas Akhir sudah ada');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Judul Tugas Akhir sudah ada'
+                ], 400);
             }
-            return redirect('/dashboard-mahasiswa');
         } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver');
-            return redirect('/dashboard-mahasiswa');
+            return response()->json([
+                'success' => false,
+                'message' => 'Terdapat masalah di server',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
+
     public function autocomplete()
     {
         $term = request()->get("term");
@@ -95,6 +108,9 @@ class DashboardMahasiswaController extends Controller
             ];
         }
 
-        echo json_encode($temp);
+        return response()->json([
+            'success' => true,
+            'data' => $temp
+        ]);
     }
 }
