@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Validator;
 // Mahasiswa
 class DaftarTaController extends Controller
 {
-
     public function index()
     {
         $id = Auth::user()->id;
@@ -30,78 +29,82 @@ class DaftarTaController extends Controller
         $bimbinganId = Bimbingan::Mahasiswa($id)->bimbingan_id;
 
         if (!isset($dataTa)) {
-            toastr()->error('Isikan Judul Proposal Terlebih Dahulu');
-            return redirect('/dashboard-mahasiswa');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Isikan Judul Proposal Terlebih Dahulu'
+            ], 400);
         } elseif (!isset($dosenNama, $dosenNip, $bimbinganId)) {
-            toastr()->error('Anda Belum Mendapatkan Dosen Pembimbing');
-            return redirect('/dashboard-mahasiswa');
-        } else {
-            $mahasiswa = Bimbingan::Mahasiswa($id);
-            $dokumenSyaratTa = SyaratTa::dokumenSyaratTa($id);
-
-            Carbon::setLocale('id');
-            $jadwal = JadwalSidang::DaftarTa()->get()->sortBy('jadwal_id');
-            foreach ($jadwal as $jd) {
-                $temp_tgl = $jd->tgl_sidang;
-                $jd->tgl_sidang = Carbon::parse($temp_tgl)->translatedFormat('l, j F Y');
-                $jd->hari_sidang = Carbon::parse($temp_tgl)->translatedFormat('l');
-            }
-
-            $jadwalAda = DB::table('ta_sidang')->pluck('jadwal_id')->toArray();
-
-            $BimbinganLog = BimbinganLog::BimbinganLog($id);
-            $jumlahBimbingan1 = $BimbinganLog->where('urutan', 1)->where('bimb_status', 1)->count();
-            $jumlahBimbingan2 = $BimbinganLog->where('urutan', 2)->where('bimb_status', 1)->count();
-
-            $masterJumlah = DB::table('bimbingan_counts')
-                ->value('bimbingan_counts.total_bimbingan');
-
-            $memenuhiBimbingan = $jumlahBimbingan1 >= $masterJumlah && $jumlahBimbingan2 >= $masterJumlah;
-
-            $memenuhiSyarat = $dokumenSyaratTa->every(function ($item) {
-                return $item->dokumen_file != null && $item->verified == 1;
-            });
-
-            $taSidang = TaSidang::where('ta_id', $dataTa->ta_id)->first();
-            $verifikasiPembimbing = collect($mahasiswa->dosen)->every(function ($item) {
-                return $item['verified'] == 1;
-            });
-
-            //GET DATA PARTNER
-            $partner = DB::selectOne("SELECT
-                        TAM1.mhs_nim,
-                        tas.ta_id
-                    FROM
-                        `tas_mahasiswa` TAM
-                    JOIN tas_mahasiswa TAM1 ON
-                        TAM.ta_id = TAM1.ta_id AND TAM.mhs_nim <> TAM1.mhs_nim
-                    JOIN tas ON 
-                        TAM1.mhs_nim = tas.mhs_nim
-                    WHERE
-                        TAM.mhs_nim = '" . $mahasiswa->mhs_nim . "';");
-
-            $partner_valid = isset($partner->mhs_nim) ? $this->is_mhs_eligible_sidang($partner->mhs_nim) : NULL;
-
-            // Prepare the final response
-            $response = [
-                'status' => 'success',
-                'BimbinganLog' => $BimbinganLog,
-                'jadwal' => $jadwal,
-                'jadwalAda' => $jadwalAda,
-                'dokumenSyaratTa' => $dokumenSyaratTa,
-                'memenuhiSyarat' => $memenuhiSyarat,
-                'memenuhiBimbingan' => $memenuhiBimbingan,
-                'taSidang' => $taSidang,
-                'masterJumlah' => $masterJumlah,
-                'mahasiswa' => $mahasiswa,
-                'verifikasiPembimbing' => $verifikasiPembimbing,
-                'partner' => $partner,
-                'partner_valid' => $partner_valid,
-            ];
-
-            return response()->json($response);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Anda Belum Mendapatkan Dosen Pembimbing'
+            ], 400);
         }
+
+        $mahasiswa = Bimbingan::Mahasiswa($id);
+        $dokumenSyaratTa = SyaratTa::dokumenSyaratTa($id);
+
+        Carbon::setLocale('id');
+        $jadwal = JadwalSidang::DaftarTa()->get()->sortBy('jadwal_id');
+        foreach ($jadwal as $jd) {
+            $temp_tgl = $jd->tgl_sidang;
+            $jd->tgl_sidang = Carbon::parse($temp_tgl)->translatedFormat('l, j F Y');
+            $jd->hari_sidang = Carbon::parse($temp_tgl)->translatedFormat('l');
+        }
+
+        $jadwalAda = DB::table('ta_sidang')->pluck('jadwal_id')->toArray();
+
+        $BimbinganLog = BimbinganLog::BimbinganLog($id);
+        $jumlahBimbingan1 = $BimbinganLog->where('urutan', 1)->where('bimb_status', 1)->count();
+        $jumlahBimbingan2 = $BimbinganLog->where('urutan', 2)->where('bimb_status', 1)->count();
+
+        $masterJumlah = DB::table('bimbingan_counts')->value('bimbingan_counts.total_bimbingan');
+
+        $memenuhiBimbingan = $jumlahBimbingan1 >= $masterJumlah && $jumlahBimbingan2 >= $masterJumlah;
+
+        $memenuhiSyarat = $dokumenSyaratTa->every(function ($item) {
+            return $item->dokumen_file != null && $item->verified == 1;
+        });
+
+        $taSidang = TaSidang::where('ta_id', $dataTa->ta_id)->first();
+        $verifikasiPembimbing = collect($mahasiswa->dosen)->every(function ($item) {
+            return $item['verified'] == 1;
+        });
+
+        // GET DATA PARTNER
+        $partner = DB::selectOne("SELECT
+                    TAM1.mhs_nim,
+                    tas.ta_id
+                FROM
+                    `tas_mahasiswa` TAM
+                JOIN tas_mahasiswa TAM1 ON
+                    TAM.ta_id = TAM1.ta_id AND TAM.mhs_nim <> TAM1.mhs_nim
+                JOIN tas ON 
+                    TAM1.mhs_nim = tas.mhs_nim
+                WHERE
+                    TAM.mhs_nim = '" . $mahasiswa->mhs_nim . "';");
+
+        $partner_valid = isset($partner->mhs_nim) ? $this->is_mhs_eligible_sidang($partner->mhs_nim) : NULL;
+
+        // Prepare the final response
+        $response = [
+            'status' => 'success',
+            'BimbinganLog' => $BimbinganLog,
+            'jadwal' => $jadwal,
+            'jadwalAda' => $jadwalAda,
+            'dokumenSyaratTa' => $dokumenSyaratTa,
+            'memenuhiSyarat' => $memenuhiSyarat,
+            'memenuhiBimbingan' => $memenuhiBimbingan,
+            'taSidang' => $taSidang,
+            'masterJumlah' => $masterJumlah,
+            'mahasiswa' => $mahasiswa,
+            'verifikasiPembimbing' => $verifikasiPembimbing,
+            'partner' => $partner,
+            'partner_valid' => $partner_valid,
+        ];
+
+        return response()->json($response, 200);
     }
+
     
     public function is_mhs_eligible_sidang($mhs_nim)
     {
@@ -150,14 +153,22 @@ class DaftarTaController extends Controller
             'draft_syarat' => 'required|mimetypes:application/pdf|max:2048000',
         ]);
 
-
         if ($validator->fails()) {
-            toastr()->error('Gagal mengupload </br> Periksa kembali data anda');
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        };
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengupload, periksa kembali data anda',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $dokumen = DokumenSyaratTa::where('dokumen_id', $request->post('dokumen_id'))->first();
+
+        if (!$dokumen) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dokumen tidak ditemukan'
+            ], 404);
+        }
 
         $syaratTa = SyaratTa::where('dokumen_id', $request->post('dokumen_id'))
             ->where('ta_id', $taId)
@@ -184,32 +195,85 @@ class DaftarTaController extends Controller
                 ]
             );
 
-
-            toastr()->success($dokumen->dokumen_syarat . ' berhasil terupload');
-            return redirect()->route('daftar-tugas-akhir.index');
+            return response()->json([
+                'status' => 'success',
+                'message' => $dokumen->dokumen_syarat . ' berhasil terupload',
+                'data' => [
+                    'dokumen_id' => $request->post('dokumen_id'),
+                    'file_name' => $namaFile,
+                    'original_name' => $draftSyarat->getClientOriginalName()
+                ]
+            ], 200);
         } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
-            return redirect()->route('daftar-tugas-akhir.index');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terdapat masalah di server: ' . $th->getMessage()
+            ], 500);
         }
     }
+
 
     public function upload($id)
     {
         $idUser = Auth::user()->id;
+
+        // Mengambil dokumen syarat TA berdasarkan user ID dan dokumen ID
         $dokumenSyaratTa = SyaratTa::dokumenSyaratTa($idUser)->where('dokumen_id', $id)->first();
-        if ($dokumenSyaratTa->verified == 1) {
-            toastr()->warning('Syarat Sudah Diverifikasi');
-            return redirect()->route('daftar-tugas-akhir.index');
-        } else {
-            return view('daftar-ta.upload', compact('dokumenSyaratTa'));
+
+        if (!$dokumenSyaratTa) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dokumen tidak ditemukan'
+            ], 404);
         }
+
+        // Cek status verifikasi dokumen
+        if ($dokumenSyaratTa->verified == 1) {
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Syarat sudah diverifikasi'
+            ], 200);
+        }
+
+        // Mengembalikan data dokumen jika belum diverifikasi
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data dokumen ditemukan',
+            'data' => [
+                'dokumen_id' => $dokumenSyaratTa->dokumen_id,
+                'dokumen_file_original' => $dokumenSyaratTa->dokumen_file_original,
+                'verified' => $dokumenSyaratTa->verified
+            ]
+        ], 200);
     }
+
     public function show($id)
     {
         $idUser = Auth::user()->id;
+
+        // Mengambil dokumen syarat TA berdasarkan user ID dan dokumen ID
         $dokumenSyaratTa = SyaratTa::dokumenSyaratTa($idUser)->where('dokumen_id', $id)->first();
 
-        return view('daftar-ta.show', compact('dokumenSyaratTa'));
+        if (!$dokumenSyaratTa) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Dokumen tidak ditemukan'
+            ], 404);
+        }
+
+        // Mengembalikan data dokumen dalam format JSON
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data dokumen ditemukan',
+            'data' => [
+                'dokumen_id' => $dokumenSyaratTa->dokumen_id,
+                'dokumen_file_original' => $dokumenSyaratTa->dokumen_file_original,
+                'dokumen_file' => $dokumenSyaratTa->dokumen_file,
+                'verified' => $dokumenSyaratTa->verified,
+                'created_at' => $dokumenSyaratTa->created_at,
+                'updated_at' => $dokumenSyaratTa->updated_at
+            ]
+        ], 200);
     }
 
     public function store(Request $request)
@@ -217,18 +281,21 @@ class DaftarTaController extends Controller
         $id = Auth::user()->id;
         $taId = Bimbingan::Mahasiswa($id)->ta_id;
 
+        // Validasi input
         $validator = Validator::make($request->all(), [
             'draft_syarat' => 'required|mimetypes:application/pdf|max:2048',
+            'dokumenId' => 'required|integer|exists:dokumen,id'
         ]);
 
-
         if ($validator->fails()) {
-            toastr()->error('Gagal mengupload </br> Periksa kembali data anda');
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        };
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
+        // Cek jika dokumen sebelumnya ada dan hapus file lama
         $syaratTa = SyaratTa::where('dokumen_id', $request->dokumenId)
             ->where('ta_id', $taId)
             ->first();
@@ -241,11 +308,13 @@ class DaftarTaController extends Controller
         }
 
         try {
+            // Upload file baru
             $draftSyarat = $request->file('draft_syarat');
             $namaFile = date('Ymdhis') . '.' . $draftSyarat->getClientOriginalExtension();
             $draftSyarat->storeAs('public/syarat_ta', $namaFile);
 
-            SyaratTa::updateOrCreate(
+            // Simpan atau update data di database
+            $data = SyaratTa::updateOrCreate(
                 ['dokumen_id' => $request->dokumenId, 'ta_id' => $taId],
                 [
                     'dokumen_file_original' => $draftSyarat->getClientOriginalName(),
@@ -254,12 +323,20 @@ class DaftarTaController extends Controller
                 ]
             );
 
+            // Return respons sukses
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Syarat berhasil terupload',
+                'data' => $data
+            ], 200);
 
-            toastr()->success('Syarat berhasil terupload');
-            return redirect()->route('daftar-tugas-akhir.index');
         } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
-            return redirect()->route('daftar-tugas-akhir.index');
+            // Return respons error jika terjadi masalah
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi masalah di server',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -268,21 +345,23 @@ class DaftarTaController extends Controller
         $id = Auth::user()->id;
         $taId = Bimbingan::Mahasiswa($id)->ta_id;
 
+        // Validasi input
         $validator = Validator::make($request->all(), [
-            'judulFinal' => 'Required',
-            'jadwal' => 'Required'
+            'judulFinal' => 'required|string',
+            'jadwal' => 'required|integer|exists:jadwals,id'
         ]);
 
         if ($validator->fails()) {
-            toastr()->error('Gagal mengupload </br> Periksa kembali data anda');
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        };
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         try {
-
-            TaSidang::updateOrCreate(
+            // Simpan atau perbarui data TA Sidang untuk pengguna
+            $dataUser = TaSidang::updateOrCreate(
                 ['ta_id' => $taId],
                 [
                     'jadwal_id' => $request->jadwal,
@@ -290,20 +369,19 @@ class DaftarTaController extends Controller
                     'status_lulus' => 0
                 ]
             );
-            $partner = DB::selectOne("SELECT
-                        TAM1.mhs_nim,
-                        tas.ta_id
-                    FROM
-                        `tas_mahasiswa` TAM
-                    JOIN tas_mahasiswa TAM1 ON
-                        TAM.ta_id = TAM1.ta_id AND TAM.mhs_nim <> TAM1.mhs_nim
-                    JOIN tas ON 
-                        TAM1.mhs_nim = tas.mhs_nim
-                    WHERE
-                        TAM.mhs_nim = '" . Bimbingan::Mahasiswa($id)->mhs_nim . "';");
+
+            // Cari partner jika ada
+            $partner = DB::selectOne("
+                SELECT TAM1.mhs_nim, tas.ta_id
+                FROM tas_mahasiswa TAM
+                JOIN tas_mahasiswa TAM1 ON TAM.ta_id = TAM1.ta_id AND TAM.mhs_nim <> TAM1.mhs_nim
+                JOIN tas ON TAM1.mhs_nim = tas.mhs_nim
+                WHERE TAM.mhs_nim = ?
+            ", [Bimbingan::Mahasiswa($id)->mhs_nim]);
 
             if ($partner) {
-                TaSidang::updateOrCreate(
+                // Simpan atau perbarui data TA Sidang untuk partner
+                $dataPartner = TaSidang::updateOrCreate(
                     ['ta_id' => $partner->ta_id],
                     [
                         'jadwal_id' => $request->jadwal,
@@ -313,30 +391,54 @@ class DaftarTaController extends Controller
                 );
             }
 
-            toastr()->success('Berhasil Daftar');
-            return redirect()->route('sidang-tugas-akhir.index');
+            // Respons sukses
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Berhasil mendaftar sidang',
+                'data' => [
+                    'user_ta_sidang' => $dataUser,
+                    'partner_ta_sidang' => $partner ?? null
+                ]
+            ], 200);
+
         } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
-            return redirect()->route('daftar-tugas-akhir.index');
+            // Respons error server
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terdapat masalah di server',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 
     public function destroy($id)
     {
         try {
-            $syaratTa = SyaratTa::findorfail($id);
+            $syaratTa = SyaratTa::findOrFail($id);
 
+            // Hapus file yang terkait jika ada
             $fileLama = public_path('storage/syarat_ta/' . $syaratTa->dokumen_file);
             if (file_exists($fileLama)) {
                 unlink($fileLama);
             }
 
+            // Hapus data di database
             $syaratTa->delete();
-            toastr()->success('File berhasil dihapus');
-            return redirect()->route('daftar-tugas-akhir.index');
+
+            // Respons sukses
+            return response()->json([
+                'status' => 'success',
+                'message' => 'File berhasil dihapus',
+                'data' => $syaratTa
+            ], 200);
         } catch (\Throwable $th) {
-            toastr()->warning('Terdapat masalah diserver' . $th->getMessage());
-            return redirect()->route('daftar-tugas-akhir.index');
+            // Respons error server
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terdapat masalah di server',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
+
 }

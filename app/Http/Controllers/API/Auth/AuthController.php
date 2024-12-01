@@ -18,7 +18,8 @@ class AuthController extends Controller
         if (Auth::check()) {
             return response()->json([
                 'message' => 'User is already logged in',
-                'user' => Auth::user()
+                'user' => Auth::user(),
+                'role' => Auth::user()->roles()->pluck('name'),
             ]);
         }
 
@@ -33,7 +34,8 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
+                'role' => Auth::user()->roles()->pluck('name'),
             ]);
         }
 

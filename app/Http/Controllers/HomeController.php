@@ -8,6 +8,7 @@ use App\Models\Ruangan;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Exception\ServerException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -32,6 +33,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // dd(Auth::user()->roles()->pluck('name'));
         $jadwal = DB::select("SELECT
                                     JSS.*,
                                     SESI.sesi_nama,
