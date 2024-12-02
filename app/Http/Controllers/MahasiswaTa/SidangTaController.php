@@ -165,28 +165,28 @@ class SidangTaController extends Controller
         }
 
         if (!$infoujian->penguji1_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji1_ttd_path))) {
-            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji1_nama);
         }
 
         if (!$infoujian->penguji2_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji2_ttd_path))) {
-            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji2_nama);
         }
 
         if (!$infoujian->penguji3_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji3_ttd_path))) {
-            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji3_nama);
         }
 
         if (!$noSk->file_ttd || !file_exists(public_path('dist/img/' . $noSk->file_ttd))) {
-            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $noSk->nama_kajur);
         }
-        
+
         $view = view("cetak-cetak.lembar-pengesahan", [
             "jenis" => $jenis,
             "prodi_id" => $prodi_id,
             "prodi_nama" => $prodi->program_studi,
             "mahasiswa" => $mahasiswa,
-            "judul_ta" => $ta->ta_judul,
-            "tanggal_approve" => Carbon::parse($tgl->tgl)->translatedFormat('j F Y'),
+            "judul_ta" => $infoujian->judul_final,
+            "tanggal_approve" => Carbon::now()->translatedFormat('j F Y'),
             "pembimbing" => $pembimbing,
             "infoujian" => $infoujian,
             "infokajur" => $noSk,

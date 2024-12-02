@@ -109,11 +109,9 @@ function nim2kelas($nim)
         <br>
         <br>
         <br>
-        <table cellspacing="0" width="100%">
+        <table cellpadding="5" cellspacing="0" width="100%">
             <tr>
-                <td style="width: 5%">
-                </td>
-                <td style="width: 45%">
+                <td align="center">
                     <br>
                     Pembimbing I,<br>
                     <br>
@@ -124,8 +122,7 @@ function nim2kelas($nim)
                     {{ $pembimbing[0]['nama'] }}<br>
                     NIP. {{ $pembimbing[0]['nip'] }}<br>
                 </td>
-                <td width="20%"></td>
-                <td>
+                <td align="center">
                     Semarang, {{ $tanggal_approve }}<br>
                     Pembimbing II,<br>
                     <br>
@@ -138,15 +135,14 @@ function nim2kelas($nim)
                 </td>
             </tr>
         </table>
-        <table cellspacing="0" width="100%" style="margin-top: 50px;">
+        <table cellpadding="5" cellspacing="0" width="100%" style="margin-top:50px;">
             <tr>
-                <td width="40%"></td>
-                <td class="text-center">
+                <td align="center">
                     Mengetahui<br>
                     Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_paraf }}"
+                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_ttd }}"
                         height="72">
                     <br>
                     {{ $infokajur->nama_kajur }}<br>
@@ -176,14 +172,10 @@ function nim2kelas($nim)
             Skripsi dengan judul "{{ $judul_ta }}" telah dipertahankan dalam ujian wawancara dan diterima sebagai syarat untuk menjadi Sarjana Terapan pada Program Studi Teknologi Rekayasa Komputer, Jurusan Teknik Elektro Politeknik Negeri Semarang pada tanggal {{ $tanggal_approve }}
         </p>
         <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <table cellspacing="0" width="100%">
+        <p align="center">Tim Penguji</p>
+        <table cellpadding="5" cellspacing="0" width="100%">
             <tr>
-                <td style="width: 33%">
+                <td align="center">
                     Penguji I,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
@@ -193,7 +185,7 @@ function nim2kelas($nim)
                     {{ $infoujian->penguji1_nama }}<br>
                     NIP. {{ $infoujian->penguji1_nip }}<br>
                 </td>
-                <td>
+                <td align="center">
                     Penguji II,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
@@ -203,8 +195,8 @@ function nim2kelas($nim)
                     {{ $infoujian->penguji2_nama }}<br>
                     NIP. {{ $infoujian->penguji2_nip }}<br>
                 </td>
-                <td>
-                    Penguji II,<br>
+                <td align="center">
+                    Penguji III,<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infoujian->penguji3_ttd_path }}"
@@ -215,15 +207,39 @@ function nim2kelas($nim)
                 </td>
             </tr>
         </table>
-        <table cellspacing="0" width="100%" style="margin-top: 50px;">
+        <table cellpadding="5" cellspacing="0" width="100%">
             <tr>
-                <td width="40%"></td>
-                <td class="text-center">
+                <td align="center">
+                    <br>
+                    Ketua,<br>
+                    <br>
+                    <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
+                    <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
+                        height="72" width="150">
+                    <br>
+                    {{ $pembimbing[0]['nama'] }}<br>
+                    NIP. {{ $pembimbing[0]['nip'] }}<br>
+                </td>
+                <td align="center">
+                    Sekretaris,<br>
+                    <br>
+                    <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
+                    <img src="{{ asset('dist/img') . '/' . $infoujian->sekretaris_ttd_path }}"
+                        height="72" width="150">
+                    <br>
+                    {{ $infoujian->sekretaris_nama }}<br>
+                    NIP. {{ $infoujian->sekretaris_nip }}<br>
+                </td>
+            </tr>
+        </table>
+        <table cellpadding="5" cellspacing="0" width="100%" style="margin-top:50px;">
+            <tr>
+                <td align="center">
                     Mengetahui<br>
                     Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
-                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_paraf }}"
+                    <img src="{{ asset('dist/img') . '/' . $infokajur->file_ttd }}"
                         height="72">
                     <br>
                     {{ $infokajur->nama_kajur }}<br>

@@ -242,7 +242,9 @@ class BimbinganMahasiswaController extends Controller
             $bimbLog = BimbinganLog::findOrFail($id);
 
             $fileLama = public_path('storage/draft_ta/' . $bimbLog->bimb_file);
-            if (file_exists($fileLama)) {
+            
+            // Periksa apakah fileLama adalah file, bukan folder
+            if (file_exists($fileLama) && is_file($fileLama)) {
                 unlink($fileLama);
             }
 
@@ -259,6 +261,7 @@ class BimbinganMahasiswaController extends Controller
             ], 500);
         }
     }
+
 
 
     public function cetak_persetujuan_sidang()
@@ -294,7 +297,7 @@ class BimbinganMahasiswaController extends Controller
         $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
 
         Carbon::setLocale('id');
-
+        
         $view = view("cetak-cetak.persetujuan-sidang", [
             "jenis" => $jenis,
             "prodi_id" => $prodi_id,
@@ -304,13 +307,17 @@ class BimbinganMahasiswaController extends Controller
             "tanggal_approve" => Carbon::parse($tgl->tgl)->translatedFormat('j F Y'),
             "pembimbing" => $pembimbing
         ]);
-        $mpdf = new MpdfMpdf();
+        $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Persetujuan Sidang ' . ucwords(strtolower($mhs->mhs_nama)) . '.pdf', 'I');
 
-        //echo $view;
+        // Simpan PDF ke dalam file sementara
+        $filePath = storage_path('app/public/persetujuan_sidang.pdf');
+        $mpdf->Output($filePath, 'F');
+
+        // Kembalikan PDF sebagai response download
+        return response()->download($filePath, 'Persetujuan_Sidang_' . ucwords(strtolower($mhs->mhs_nama)) . '.pdf')->deleteFileAfterSend(true);
     }
 
     // BimbinganMahasiswaController.php
@@ -399,8 +406,12 @@ class BimbinganMahasiswaController extends Controller
 
         // Add the footer section
         $this->addFooterSection($pdf, $bimbinganData, $sebagai);
+        // Simpan PDF ke dalam file sementara
+        $filePath = storage_path('app/public/lembar_kontrol_' . $id . '.pdf');
+        $pdf->Output($filePath, 'F');
 
-        return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
+        // Kembalikan PDF sebagai response download
+        return response()->download($filePath, 'Lembar_Kontrol_' . ucwords(strtolower($nama)) . '.pdf')->deleteFileAfterSend(true);
     }
 
     function addFooterSection($pdf, $bimbinganData, $sebagai)

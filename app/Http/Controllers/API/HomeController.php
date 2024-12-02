@@ -159,25 +159,52 @@ class HomeController extends Controller
 
     public function streamDocument($enc_path)
     {
-        $dl       = request()->get('dl');
-        $filename = request()->get('filename'); //FILENAME WAJIB SUDAH ADA EKSTENSINYA
+        $dl = request()->get('dl');
+        $filename = request()->get('filename'); // Ensure this has the extension
 
-        $file     = decrypt($enc_path);
-        $mimetype = mime_content_type($file);
+        // Decrypt the path
+        $file = decrypt($enc_path);
 
-        $parts = explode(".", $file);
-        $ext   = $parts[count($parts) - 1];
+        // Define directories
+        $directories = [
+            'storage/draft_revisi/',
+            'storage/draft_ta/',
+            'storage/syarat_ta/',
+            'storage/lembar_pengesahan/'
+        ];
 
-        header('Content-Type: ' . $mimetype);
-        header('Content-Description: File Transfer');
-        if ($dl == '1') {
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-        } else {
-            header('Content-Disposition: inline; filename="' . $filename . '"');
+        $fullPath = null;
+
+        // Loop through directories to find the file
+        foreach ($directories as $directory) {
+            $path = public_path($directory . $file);
+            if (file_exists($path)) {
+                $fullPath = $path;
+                break; // Exit the loop once the file is found
+            }
         }
-        readfile($file);
-        die;
+
+        // Check if the file was found
+        if (!$fullPath) {
+            return response()->json(['status' => 'error', 'message' => 'File not found.'], 404);
+        }
+
+        // Prepare the response for downloading
+        $mimetype = mime_content_type($fullPath);
+        $headers = [
+            'Content-Type' => $mimetype,
+            'Content-Description' => 'File Transfer',
+        ];
+
+        if ($dl == '1') {
+            // Return the file for download
+            return response()->download($fullPath, $filename, $headers);
+        } else {
+            // Return the file for inline viewing
+            return response()->file($fullPath, $headers);
+        }
     }
+
 
     public function resetPasswordFormRequest()
     {

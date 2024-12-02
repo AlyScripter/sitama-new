@@ -222,15 +222,6 @@
                                                                         title="Input Kelayakan Ujian Sidang">
                                                                         <i class="fas fa-edit"></i> Input Nilai
                                                                     </a>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ url('revisi-dosen', $item->mhs_nim) }}"
-                                                                        data-toggle="tooltip" data-placement="top"
-                                                                        title="Lihat Revisi">
-                                                                        <i class="fas fa-eye"></i> Lihat Revisi
-                                                                    </a>            
-                                                                    <a class="dropdown-item" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
-                                                                        <i class="fas fa-file-pdf"></i> Cetak Lembar Pengesahan
-                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         @elseif ($item->isPenguji)
@@ -257,9 +248,6 @@
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         title="Lihat Revisi">
                                                                         <i class="fas fa-eye"></i> Lihat Revisi
-                                                                    </a>            
-                                                                    <a class="dropdown-item" target="_blank" href="{{ route('ujian-sidang.view-lembar', $item->ta_id) }}">
-                                                                        <i class="fas fa-file-pdf"></i> Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>

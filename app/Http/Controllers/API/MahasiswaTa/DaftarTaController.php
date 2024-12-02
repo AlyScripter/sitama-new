@@ -250,30 +250,29 @@ class DaftarTaController extends Controller
     public function show($id)
     {
         $idUser = Auth::user()->id;
-
-        // Mengambil dokumen syarat TA berdasarkan user ID dan dokumen ID
         $dokumenSyaratTa = SyaratTa::dokumenSyaratTa($idUser)->where('dokumen_id', $id)->first();
-
+        
+        // Check if the document exists
         if (!$dokumenSyaratTa) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Dokumen tidak ditemukan'
+                'message' => 'Document not found'
+            ], 404);
+        }
+        
+        $filePath = public_path('storage/syarat_ta/' . $dokumenSyaratTa->dokumen_file); // Adjust this path as needed
+        // dd($filePath);
+
+        // Check if the file exists
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'File not found'
             ], 404);
         }
 
-        // Mengembalikan data dokumen dalam format JSON
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data dokumen ditemukan',
-            'data' => [
-                'dokumen_id' => $dokumenSyaratTa->dokumen_id,
-                'dokumen_file_original' => $dokumenSyaratTa->dokumen_file_original,
-                'dokumen_file' => $dokumenSyaratTa->dokumen_file,
-                'verified' => $dokumenSyaratTa->verified,
-                'created_at' => $dokumenSyaratTa->created_at,
-                'updated_at' => $dokumenSyaratTa->updated_at
-            ]
-        ], 200);
+        // Return the file as a download response
+        return response()->download($filePath, $dokumenSyaratTa->dokumen_file_original);
     }
 
     public function store(Request $request)
@@ -347,8 +346,8 @@ class DaftarTaController extends Controller
 
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'judulFinal' => 'required|string',
-            'jadwal' => 'required|integer|exists:jadwals,id'
+            'judulFinal' => 'Required',
+            'jadwal' => 'Required'
         ]);
 
         if ($validator->fails()) {

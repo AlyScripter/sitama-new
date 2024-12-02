@@ -29,22 +29,20 @@
                         </div>
                         <form action="{{ route('store-revisi-dosen', $mhs_nim) }}" method="POST" enctype="multipart/form-data" id="deskripsiForm">
                             @csrf
-                            <div class="card-body">
-                                <div class="form-group">
+                            <div class="card-body" id="deskripsiContainer">
+                                <div class="form-group revisi-item">
                                     <label>Deskripsi <span class="text-danger">*</span></label>
-                                    <p class="text-gray font-italic">Untuk menambahkan dua revisi atau lebih gunakan enter</p>
-                                    <textarea id="deskripsiInput" name="deskripsi" class="form-control @error('desk')is-invalid @enderror" placeholder="Masukkan Deskripsi" rows="6" style="resize: none;"></textarea>
+                                    <textarea name="deskripsi[]" class="form-control @error('desk')is-invalid @enderror" placeholder="Masukkan Deskripsi" rows="3" style="resize: none;"></textarea>
                                     @error('desk')
                                         <div class="invalid-feedback" role="alert">
                                             <span>{{ $message }}</span>
                                         </div>
                                     @enderror
                                 </div>
-                                <input type="hidden" name="deskripsi_array" id="deskripsiArrayInput" />
                             </div>
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-info btn-block btn-flat"><i class="fa fa-save"></i>
-                                    Simpan</button>
+                                <button type="button" id="addRevisiButton" class="btn btn-success"><i class="fas fa-plus"></i> Tambah Revisi</button>
+                                <button type="submit" class="btn btn-info btn-block btn-flat mt-2"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </form>
                     </div>
@@ -55,22 +53,42 @@
 @endsection
 @push('js')
     <script>
+        document.getElementById('addRevisiButton').addEventListener('click', function() {
+            const container = document.getElementById('deskripsiContainer');
+            
+            // Buat elemen baru untuk revisi tambahan
+            const newRevisi = document.createElement('div');
+            newRevisi.className = 'form-group revisi-item';
+            newRevisi.innerHTML = `
+                <label>Deskripsi <span class="text-danger">*</span></label>
+                <textarea name="deskripsi[]" class="form-control" placeholder="Masukkan Deskripsi" rows="3" style="resize: none;"></textarea>
+            `;
+            
+            // Tambahkan elemen baru ke container
+            container.appendChild(newRevisi);
+        });
+
         document.getElementById('deskripsiForm').addEventListener('submit', function(event) {
-        // Cegah form dikirim jika data belum siap
-        event.preventDefault();  // Mencegah form submit sebelum data siap
+            // Cegah form dikirim jika data belum siap
+            event.preventDefault();
 
-        const deskripsi = document.getElementById('deskripsiInput').value;
-        const deskripsiArray = deskripsi.split('\n').map(item => item.trim()).filter(item => item);
-        
-        // Debugging: cek apakah data yang dikirimkan sesuai
-        console.log('Deskripsi Array:', deskripsiArray);
+            // Kumpulkan semua textarea dalam array
+            const deskripsiArray = Array.from(document.querySelectorAll('textarea[name="deskripsi[]"]'))
+                .map(textarea => textarea.value.trim())
+                .filter(value => value);
 
-        // Set input hidden dengan JSON string dari deskripsiArray
-        document.getElementById('deskripsiArrayInput').value = JSON.stringify(deskripsiArray);
+            // Debugging: cek apakah data yang dikirimkan sesuai
+            console.log('Deskripsi Array:', deskripsiArray);
 
-        // Kirim form setelah data disiapkan
-        event.target.submit();  // Form akan disubmit hanya sekali di sini
-    });
+            // Set input hidden dengan JSON string dari deskripsiArray
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'deskripsi_array';
+            hiddenInput.value = JSON.stringify(deskripsiArray);
+            this.appendChild(hiddenInput);
 
+            // Kirim form setelah data disiapkan
+            event.target.submit();
+        });
     </script>
 @endpush
