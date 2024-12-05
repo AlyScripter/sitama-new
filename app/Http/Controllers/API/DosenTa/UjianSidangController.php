@@ -95,7 +95,12 @@ class UjianSidangController extends Controller
         }
         $nilai_pembimbing_saved = $temp;
 
-        return view('ujian-sidang.kelayakan', compact('ta_mahasiswa', 'infoMhs', 'nilai_pembimbing', 'nilai_pembimbing_saved'));
+        return response()->json([
+            'ta_mahasiswa' => $ta_mahasiswa,
+            'infoMhs' => $infoMhs,
+            'nilai_pembimbing' => $nilai_pembimbing,
+            'nilai_pembimbing_saved' => $nilai_pembimbing_saved,
+        ]);
     }
 
 
@@ -116,7 +121,12 @@ class UjianSidangController extends Controller
         }
         $nilai_penguji_saved = $temp;
 
-        return view('ujian-sidang.penguji', compact('ta_mahasiswa', 'infoMhs', 'nilai_penguji', 'nilai_penguji_saved'));
+        return response()->json([
+            'ta_mahasiswa' => $ta_mahasiswa,
+            'infoMhs' => $infoMhs,
+            'nilai_penguji' => $nilai_penguji,
+            'nilai_penguji_saved' => $nilai_penguji_saved,
+        ]);
     }
 
     public function storeKelayakan(Request $request, $taSidangId)
@@ -186,10 +196,16 @@ class UjianSidangController extends Controller
                 ],
             );
 
-        return redirect()->route('ujian-sidang.index')->with('success', 'Nilai berhasil disimpan.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Nilai berhasil disimpan.',
+            'data' => [
+                'nilai_pembimbing' => $nilaiPembimbing,
+                'nilai_penguji' => $nilaiPenguji,
+                'nilai_akhir' => $nilaiAkhir,
+            ],
+        ]);
     }
-
-
 
     public function storePenguji(Request $request, $taSidangId)
     {
@@ -256,8 +272,17 @@ class UjianSidangController extends Controller
                 ],
             );
 
-        return redirect()->route('ujian-sidang.index')->with('success', 'Nilai berhasil disimpan.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Nilai berhasil disimpan.',
+            'data' => [
+                'nilai_penguji' => $rataRata,
+                'nilai_pembimbing' => $nilaiPembimbing,
+                'nilai_akhir' => $nilaiAkhir,
+            ],
+        ]);
     }
+
     public function showRevisi($ta_id)
     {
         $ta_mahasiswa = Ta::findOrFail($ta_id);
@@ -320,6 +345,11 @@ class UjianSidangController extends Controller
         $nama_bulan = $bulan_indonesia[$bulan];
         $tanggal_indonesia = $tanggal . ' ' . $nama_bulan . ' ' . $tahun;
 
+        $tanggal_sekarang = date('d-m-Y', strtotime(date("Y-m-d")));
+        list($tanggal2, $bulan2, $tahun2) = explode('-', $tanggal_sekarang);
+        $nama_bulan2 = $bulan_indonesia[$bulan2];
+        $tanggal_now = $tanggal2 . ' ' . $nama_bulan2 . ' ' . $tahun2;
+
         if ($hari_indonesia == 'Jumat') {
             $sesi_mulai = $infoujian->sesi_waktu_mulai_jumat;
             $sesi_selesai = $infoujian->sesi_waktu_selesai_jumat;
@@ -338,9 +368,13 @@ class UjianSidangController extends Controller
 
         // Ambil no_sk dan file_ttd berdasarkan tahun_ajaran
         $noSk = Ta::NoSk($tahunAjaran->ta, $kode_prodi);
-        
+        // dd($noSk);
         if (!$noSk) {
             return redirect()->route('ta.index')->with('error', 'Nomor SK tidak ditemukan.');
+        }
+
+        if (!$noSk->file_paraf || !file_exists(public_path('dist/img/' . $noSk->file_paraf))) {
+            return redirect()->route('ta.index')->with('error', 'File tanda tangan tidak ditemukan.');
         }
 
         $pdf = new CustomPdf('P', 'mm', [210, 330]);
@@ -516,13 +550,37 @@ class UjianSidangController extends Controller
         $pdf->Cell(0, 7, 'Tugas ini supaya dijalankan dengan sebaik-baiknya dan hasilnya dilaporkan kepada Jurusan.', 0, 1);
 
         $pdf->Ln(3);
-        $pdf->Cell(0, 10, 'Semarang, 23 Agustus 2023', 0, 1, 'R');
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'Semarang,' . $tanggal_now, 0, 1);
 
-        $signaturePath = public_path('dist/img/ttd_kajur.jpg');
-        $pdf->Image($signaturePath, $pdf->GetX() + 120, $pdf->GetY(), 70, 45);
+        //ketua jurusan saja
+        // $pdf->Cell(120, 5, '', 0, 0);
+        // $pdf->Cell(0, 5, 'Ketua Jurusan Teknik Elektro', 0, 1);
+
+        //an ketua jurusan, sekretaris jurusan
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'a.n Ketua Jurusan Teknik Elektro', 0, 1);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'Sekretaris Jurusan Teknik Elektro', 0, 1);
+
+        $pdf->Ln(20);
+        $signaturePath = public_path('dist/img/' . $noSk->file_paraf);
+        // $pdf->Image($signaturePath, $pdf->GetX() + 110, $pdf->GetY(), 10, 10);
+        $pdf->Image($signaturePath, $pdf->GetX() + 140, $pdf->GetY() - 17, 15, 15);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, $noSk->nama_kajur, 0, 1);
+        $pdf->Cell(120, 5, '', 0, 0);
+        $pdf->Cell(0, 5, 'NIP. ' . $noSk->nip_kajur, 0, 1);
+
+        $pdf->SetY(-32);
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->MultiCell(0, 5, 'Diserahkan ke Tim Penguji Tugas Akhir (lima orang) dan Pembimbing paling lambat tiga hari sebelum ujian, beserta naskah Tugas Akhir untuk Penguji.', 1, 'C');
+        $pdf->Output('Surat Tugas' . '.pdf', 'I');
 
 
-        return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
+        return response($pdf->Output('S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="Surat_Tugas_' . $id . '.pdf"');
     }
 
     public function nilaiPembimbing($ta_sidang_id)
@@ -607,14 +665,24 @@ class UjianSidangController extends Controller
             'tgl_surat_tugas' => $info_sidang->tgl_surat_tugas,
             'data_nilai' => $data_nilai,
             'skData' => $skData
-        ]);
+        ])->render();
 
-
-        $mpdf = new Mpdf();
+        $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Nilai Pembimbing ' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf', 'I');
+
+        // Menyimpan PDF ke buffer
+        $pdfContent = $mpdf->Output('', 'S'); // 'S' untuk menyimpan dalam string
+
+        return response()->streamDownload(
+            fn() => print($pdfContent),
+            'Nilai_Pembimbing_' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf',
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="Nilai_Pembimbing.pdf"',
+            ]
+        );
     }
 
     public function nilaiPenguji($ta_sidang_id)
@@ -715,7 +783,14 @@ class UjianSidangController extends Controller
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Nilai Penguji ' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf', 'I');
+        
+        // Generate PDF as string
+        $pdfContent = $mpdf->Output('', 'S'); // Output as a string
+
+        // Return PDF as a download response
+        return response($pdfContent, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="Nilai_Penguji_' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf"');
     }
 
     public function beritaAcara($ta_sidang_id)
@@ -863,7 +938,13 @@ class UjianSidangController extends Controller
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Nilai Penguji ' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf', 'I');
+        // Generate PDF as string
+        $pdfContent = $mpdf->Output('', 'S'); // Output as a string
+
+        // Return PDF as a response for download
+        return response($pdfContent, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="Berita_Acara_' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf"');
     }
 
     public function CetakRekapNilai($id)

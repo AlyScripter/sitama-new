@@ -11,6 +11,7 @@ use App\Http\Controllers\API\MahasiswaTa\RevisiMahasiswaController;
 
 use App\Http\Controllers\API\DosenTa\MahasiswaBimbinganController;
 use App\Http\Controllers\API\DosenTa\UjianSidangController;
+use App\Http\Controllers\API\DosenTa\RevisiDosenController;
 
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\Auth\AuthController;
@@ -62,8 +63,22 @@ Route::prefix('v1')->group(function () {
         Route::post('/ujian-sidang/kelayakan/{ta_id}', [UjianSidangController::class, 'storeKelayakan'])->name('ujian-sidang.storeKelayakan');
 
         Route::get('/mhsbimbingan/{ta_id}', [MahasiswaBimbinganController::class, 'pembimbingan'])->name('mhsbimbingan.pembimbingan');
+        Route::post('/setujui-pembimbingan/{ta_id}', [MahasiswaBimbinganController::class, 'setujuiPembimbingan'])->name('setujui-pembimbingan');
         Route::resource('mhsbimbingan', MahasiswaBimbinganController::class);
 
+        Route::get('ujian-sidang/kelayakan/{ta_id}', [UjianSidangController::class, 'kelayakan'])->name('ujian-sidang.kelayakan');
+        Route::post('/ujian-sidang/kelayakan/{ta_id}', [UjianSidangController::class, 'storeKelayakan'])->name('ujian-sidang.storeKelayakan');
+        Route::post('/ujian-sidang/penguji/{ta_id}', [UjianSidangController::class, 'storePenguji'])->name('ujian-sidang.storePenguji');
+        Route::get('ujian-sidang/cetak_surat_tugas/{id}', [UjianSidangController::class, 'CetakSuratTugas'])->name('ujian-sidang.CetakSuratTugas');
+        Route::get('ujian-sidang/nilai-pembimbing/{ta_sidang_id}', [UjianSidangController::class, 'nilaiPembimbing'])->name('ujian-sidang.nilai-pembimbing');
+        Route::get('ujian-sidang/nilai-penguji/{ta_sidang_id}', [UjianSidangController::class, 'nilaiPenguji'])->name('ujian-sidang.nilai-penguji');
+        Route::get('ujian-sidang/berita-acara/{ta_sidang_id}', [UjianSidangController::class, 'beritaAcara'])->name('ujian-sidang.berita-acara');
         Route::get('/ujian-sidang', [UjianSidangController::class, 'index'])->name('ujian-sidang.index');
+
+        Route::get('revisi-dosen/{id}/create', [RevisiDosenController::class, 'create'])->name('create-revisi-dosen');
+        Route::delete('revisi-dosen/{revisi_mahasiswa}', [RevisiDosenController::class, 'destroy'])->name('revisi-dosen.destroy');
+        Route::resource('revisi-dosen', RevisiDosenController::class)->except(['create', 'store', 'destroy']);
+        Route::post('revisi-dosen/{id}/store', [RevisiDosenController::class, 'store'])->name('store-revisi-dosen');
+        Route::post('/setujui-revisi/{id}', [RevisiDosenController::class, 'setujuiRevisi'])->name('setujui-revisi');
     });
 });
