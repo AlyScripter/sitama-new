@@ -58,15 +58,43 @@ class BimbinganMahasiswaController extends Controller
                 //$item->bimb_file_original = Str::limit($item->bimb_file_original, 20, '...');
 
                 $item->format_tanggal = Carbon::parse($item->bimb_tgl)->translatedFormat('l, j F Y');
+                // $path = '/stream-document/'. encrypt(env('APP_FILE_DRAFT_TA_PATH') . $item->bimb_file) . '?dl=0&filename=' . $item->bimb_file_original;
             }
-            
+
+            // Prepare an array to hold the download links
+            $downloadLinks = [];
+
+            // Loop untuk menambahkan URL download ke setiap item di logCollect
+            foreach ($logCollect as $item) {
+                if (!empty($item->bimb_file)) {
+                    // Enkripsi path file dan buat URL unduhan
+                    $encryptedFilePath = encrypt(env('APP_FILE_DRAFT_TA_PATH') . $item->bimb_file);
+                    $item->download_url = "stream-document/{$encryptedFilePath}?dl=0&filename={$item->bimb_file_original}";
+                } else {
+                    $item->download_url = null; // Atau bisa diisi dengan nilai lain jika file tidak ada
+                }
+            }
+
+            $pembimbing1_count = $logCollectJumlah->where('urutan', 1)->where('bimb_status', 1)->count();
+            $pembimbing1_count_total = $logCollectJumlah->where('urutan', 1)->count();
+
+            $pembimbing2_count = $logCollectJumlah->where('urutan', 2)->where('bimb_status', 1)->count();
+            $pembimbing2_count_total = $logCollectJumlah->where('urutan', 2)->count();
+
+            // dd($pembimbing2_count_total);
+            // Kembalikan data JSON dengan URL download di dalam logCollect
             return response()->json([
                 'success' => true,
+                'pembimbing1_count' => $pembimbing1_count,
+                'pembimbing1_count_total' => $pembimbing1_count_total,
+                'pembimbing2_count' => $pembimbing2_count,
+                'pembimbing2_count_total' => $pembimbing2_count_total,
                 'logCollect' => $logCollect,
                 'data' => $mahasiswa,
                 'masterJumlah' => $masterJumlah,
                 'logCollectJumlah' => $logCollectJumlah
             ]);
+
         }
     }
 
