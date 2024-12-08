@@ -148,7 +148,7 @@ class DaftarTaController extends Controller
         $syaratTa = SyaratTa::where('dokumen_id', $request->post('dokumen_id'))
             ->where('ta_id', $taId)
             ->first();
-
+        // dd($syaratTa);
         if ($syaratTa) {
             $fileLama = public_path('storage/syarat_ta/' . $syaratTa->dokumen_file);
             if (file_exists($fileLama) && !empty($syaratTa->dokumen_file)) {

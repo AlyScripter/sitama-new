@@ -252,38 +252,57 @@
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        $('.toast').toast('show')
-
-        // In your Javascript (external .js resource or <script> tag)
         $(document).ready(function() {
-            $('.js-example-basic-single').select2();
-        });
+        // Inisialisasi Select2 jika diperlukan
+        $('.js-example-basic-single').select2();
 
+        // Tampilkan toast jika ada
+        $('.toast').toast('show');
+
+        // Konfirmasi sebelum submit form
         $('.confirm-upload').click(function(event) {
-            var form = $(this).closest("form");
-            event.preventDefault();
+            event.preventDefault();  // Mencegah submit form secara langsung
+            var form = $(this).closest("form");  // Ambil form yang terkait dengan tombol
             swal({
                 title: `Apakah Anda Yakin?`,
                 icon: "warning",
                 buttons: {
                     confirm: {
-                        text: 'Ya'
+                        text: 'Ya',
+                        value: true,
+                        visible: true,
+                        className: 'btn btn-danger',
+                        closeModal: true,
                     },
-                    cancel: 'Tidak'
+                    cancel: {
+                        text: 'Tidak',
+                        value: false,
+                        visible: true,
+                        className: 'btn btn-secondary',
+                        closeModal: true,
+                    }
                 },
                 dangerMode: true,
             }).then((willUpload) => {
                 if (willUpload) {
-                    form.submit();
+                    form.submit();  // Submit form jika pengguna mengonfirmasi
                 }
             });
         });
 
+        // Cegah form submit otomatis saat file dipilih
+        $('input[type="file"]').on('change', function() {
+            console.log('File dipilih untuk form dengan ID:', $(this).closest('form').attr('id'));
+            // Tambahkan logika tambahan jika diperlukan
+        });
+
+        // Cegah pengiriman form dengan enter key
         $('form').keypress(function(event) {
-            if (event.which == 13) {
-                event.preventDefault();
-                $('.confirm-upload').click();
+            if (event.which == 13) {  // Cek jika tombol Enter ditekan
+                event.preventDefault();  // Cegah submit form
+                $('.confirm-upload').click();  // Simulasikan klik tombol konfirmasi
             }
         });
+    });
     </script>
 @endpush

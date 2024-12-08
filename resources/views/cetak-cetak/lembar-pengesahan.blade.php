@@ -235,8 +235,8 @@ function nim2kelas($nim)
         <table cellpadding="5" cellspacing="0" width="100%" style="margin-top:50px;">
             <tr>
                 <td align="center">
-                    Mengetahui<br>
-                    Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
+                    Mengesahkan<br>
+                    Ketua Jurusan Teknik Elektro<br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infokajur->file_ttd }}"
