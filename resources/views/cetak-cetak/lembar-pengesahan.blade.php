@@ -100,7 +100,7 @@ function nim2kelas($nim)
         </thead>
     </table>
     <div style="padding: 10px; height: 800px;">
-        <p class="text-justify">
+        <p style="text-align: justify">
             Skripsi dengan judul <strong>"{{ $judul_ta }}"</strong> dibuat untuk melengkapi sebagian persyaratan menjadi Sarjana Terapan pada Program Studi Teknologi Rekayasa Komputer Jurusan Teknik Elektro Politeknik Negeri Semarang dan disetujui untuk diajukan dalam sidang ujian Skripsi.
         </p>
         <br>
@@ -168,8 +168,8 @@ function nim2kelas($nim)
         </thead>
     </table>
     <div style="padding: 10px; height: 800px;">
-        <p class="text-justify">
-            Skripsi dengan judul "{{ $judul_ta }}" telah dipertahankan dalam ujian wawancara dan diterima sebagai syarat untuk menjadi Sarjana Terapan pada Program Studi Teknologi Rekayasa Komputer, Jurusan Teknik Elektro Politeknik Negeri Semarang pada tanggal {{ $tanggal_approve }}
+        <p style="text-align: justify">
+            Skripsi dengan judul "{{ $judul_ta }}" telah dipertahankan dalam ujian wawancara dan diterima sebagai syarat untuk menjadi Sarjana Terapan pada Program Studi Teknologi Rekayasa Komputer, Jurusan Teknik Elektro Politeknik Negeri Semarang pada tanggal {{ $tanggal_approve }}.
         </p>
         <br>
         <p align="center">Tim Penguji</p>

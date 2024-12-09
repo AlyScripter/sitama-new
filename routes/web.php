@@ -168,6 +168,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('sidang-tugas-akhir/surat-tugas', [SidangTaController::class, 'suratTugas']);
     Route::resource('sidang-tugas-akhir', SidangTaController::class);
 
+    Route::get('/cetak-lembar-pengesahan', [SidangTaController::class, 'cetak_lembar_pengesahan']);
+
     // Dosen TA
     Route::get('ujian-sidang/view-lembar/{id}', [UjianSidangController::class, 'view_lembar'])->name('ujian-sidang.view-lembar');
 
