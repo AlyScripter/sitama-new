@@ -122,7 +122,7 @@ class SidangTaController extends Controller
         }
     }
 
-    public function cetak_lembar_pengesahan() {
+    public function cetak_lembar_pengesahan_api() {
         $mhs = mahasiswa::where("email", Auth::user()->email)->first();
         $ta_mhs = collect(DB::select("SELECT mhs_nim FROM tas_mahasiswa WHERE ta_id IN (SELECT ta_id FROM tas_mahasiswa WHERE mhs_nim = '" . $mhs->mhs_nim . "') ORDER BY ta_id ASC"));
         // $ta_mhs = collect(DB::select("SELECT mhs_nim FROM tas WHERE ta_id IN (SELECT ta_id FROM tas WHERE mhs_nim = '" . $mhs->mhs_nim . "') ORDER BY ta_id ASC"));
