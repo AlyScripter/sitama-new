@@ -212,15 +212,20 @@
                                                                     <i class="fas fa-cog"></i>
                                                                 </button>
                                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                                    <a class="dropdown-item" target="_blank"
-                                                                        href="{{ route('ujian-sidang.CetakSuratTugas', $item->ta_id) }}">
-                                                                        <i class="fas fa-file-pdf"></i> Cetak Surat Tugas
-                                                                    </a>
                                                                     <a class="dropdown-item"
                                                                         href="{{ route('ujian-sidang.kelayakan', ['ta_id' => $item->ta_id]) }}"
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         title="Input Kelayakan Ujian Sidang">
                                                                         <i class="fas fa-edit"></i> Input Nilai
+                                                                    </a>
+                                                                    <a class="dropdown-item" target="_blank"
+                                                                        href="{{ route('ujian-sidang.CetakSuratTugas', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf"></i> Cetak Surat Tugas
+                                                                    </a>
+                                                                    <a target="_blank" class="dropdown-item"
+                                                                        href="{{ route('cetak-lembar-pengesahan.dosen', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf mr-1"></i>
+                                                                        Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -233,10 +238,6 @@
                                                                     <i class="fas fa-cog"></i>
                                                                 </button>
                                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                                    <a class="dropdown-item" target="_blank"
-                                                                        href="{{ route('ujian-sidang.CetakSuratTugas', $item->ta_id) }}">
-                                                                        <i class="fas fa-file-pdf"></i> Cetak Surat Tugas
-                                                                    </a>
                                                                     <a class="dropdown-item"
                                                                         href="{{ route('ujian-sidang.penguji', ['ta_id' => $item->ta_id]) }}"
                                                                         data-toggle="tooltip" data-placement="top"
@@ -248,6 +249,15 @@
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         title="Lihat Revisi">
                                                                         <i class="fas fa-eye"></i> Lihat Revisi
+                                                                    </a>
+                                                                    <a class="dropdown-item" target="_blank"
+                                                                        href="{{ route('ujian-sidang.CetakSuratTugas', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf"></i> Cetak Surat Tugas
+                                                                    </a>
+                                                                    <a target="_blank" class="dropdown-item"
+                                                                        href="{{ route('cetak-lembar-pengesahan.dosen', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf mr-1"></i>
+                                                                        Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -319,6 +329,11 @@
                                                                         href="{{ route('ujian-sidang.berita-acara', ['ta_sidang_id' => $item->ta_sidang_id]) }}">
                                                                         <i class="fas fa-file-pdf mr-1"></i>
                                                                         Cetak Berita Acara/Laporan Hasil
+                                                                    </a>
+                                                                    <a target="_blank" class="dropdown-item"
+                                                                        href="{{ route('cetak-lembar-pengesahan.dosen', $item->ta_id) }}">
+                                                                        <i class="fas fa-file-pdf mr-1"></i>
+                                                                        Cetak Lembar Pengesahan
                                                                     </a>
                                                                 </div>
                                                             </div>

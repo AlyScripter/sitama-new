@@ -185,7 +185,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('ujian-sidang/nilai-pembimbing/{ta_sidang_id}', [UjianSidangController::class, 'nilaiPembimbing'])->name('ujian-sidang.nilai-pembimbing');
     Route::get('ujian-sidang/nilai-penguji/{ta_sidang_id}', [UjianSidangController::class, 'nilaiPenguji'])->name('ujian-sidang.nilai-penguji');
     Route::get('ujian-sidang/berita-acara/{ta_sidang_id}', [UjianSidangController::class, 'beritaAcara'])->name('ujian-sidang.berita-acara');
-
+    Route::get('/cetak-lembar-pengesahan/{id}', [UjianSidangController::class, 'cetak_lembar_pengesahan'])->name('cetak-lembar-pengesahan.dosen');
 
     Route::get('/mhsbimbingan', [MahasiswaBimbinganController::class, 'index'])->name('mhsbimbingan.index');
     Route::post('/setujui-sidang-akhir/{ta_id}', [MahasiswaBimbinganController::class, 'setujuiSidangAkhir'])->name('setujui.sidang.akhir');

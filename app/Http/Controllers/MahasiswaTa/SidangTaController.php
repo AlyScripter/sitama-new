@@ -200,5 +200,4 @@ class SidangTaController extends Controller
 
         //echo $view;
     }
-
 }

@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\KodeProdi;
 use App\Models\Ta;
 use App\Models\TaSidang;
+use App\Models\mahasiswa;
 use App\Models\revisi_mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\UjianSidang;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfParser\StreamReader;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
+use Mpdf\Mpdf as MpdfMpdf;
 
 // Dosen
 class UjianSidangController extends Controller
@@ -928,7 +931,7 @@ class UjianSidangController extends Controller
         $mpdf->WriteHTML($view);
         $mpdf->SetProtection(['copy', 'print']);
         $mpdf->showImageErrors = true;
-        $mpdf->Output('Nilai Penguji ' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf', 'I');
+        $mpdf->Output('Nilai Berita Acara ' . ucwords(strtolower($info_sidang->mhs_nama)) . '.pdf', 'I');
     }
 
     public function CetakRekapNilai($id)
@@ -1147,19 +1150,111 @@ class UjianSidangController extends Controller
         return response($pdf->Output('S'), 200)->header('Content-Type', 'application/pdf');
     }
 
-    public function view_lembar($id)
-    {
+    public function cetak_lembar_pengesahan($id) {
         $datamhs = Ta::where('ta_id', $id)->first();
-        $nim = $datamhs->mhs_nim;
-        // dd($nim);
-        $fileName = DB::table('lembar_pengesahan')->where('mhs_nim', $nim)->value('file_name');
+        $mhs = mahasiswa::where("mhs_nim", $datamhs->mhs_nim)->first();
+        // dd($mhs);
+        $ta_mhs = collect(DB::select("SELECT mhs_nim FROM tas_mahasiswa WHERE ta_id IN (SELECT ta_id FROM tas_mahasiswa WHERE mhs_nim = '" . $mhs->mhs_nim . "') ORDER BY ta_id ASC"));
+        // $ta_mhs = collect(DB::select("SELECT mhs_nim FROM tas WHERE ta_id IN (SELECT ta_id FROM tas WHERE mhs_nim = '" . $mhs->mhs_nim . "') ORDER BY ta_id ASC"));
+        $prodi_id = $mhs->prodi_ID;
+        $ta = DB::selectOne("SELECT * FROM tas WHERE mhs_nim = '" . $mhs->mhs_nim . "'");
+        $prodi = KodeProdi::where("prodi_ID", $prodi_id)->first();
         
-        $filePath = storage_path('app/public/lembar_pengesahan/' . $fileName);
-        // dd($filePath);
-        if (file_exists($filePath)) {
-            return response()->file($filePath); // To display the PDF in the browser
-        }
-        abort(404); // File not found
-    }
+        $infoujian = Ta::dataujian($ta->ta_id);
+        // dd($infoujian);
 
+        $datamhs = Ta::where('ta_id', $ta->ta_id)->first();
+        $nim = $mhs->mhs_nim;
+        $depan_jenjang = substr($nim, 0, 1);
+        if ($depan_jenjang == '3')
+            $jen = "D3";
+        elseif ($depan_jenjang == '4')
+            $jen = "D4";
+
+        $belakang_jenjang = substr($nim, 1, 2);
+        if ($belakang_jenjang == '33') {
+            $prod = "TI";
+            $kelasnya = "4";
+        } elseif ($belakang_jenjang == '34') {
+            $prod = "IK";
+            $kelasnya = "3";
+        }
+
+        $kode_prodi = $jen . $prod;
+
+        $tahunAjaran = Ta::CekTahunAjaran();
+        $noSk = Ta::NoSk($tahunAjaran->ta, $kode_prodi);
+        // dd($noSk);
+        $temp = [];
+        foreach ($ta_mhs->pluck('mhs_nim') as $row) {
+            $temp[] = $row;
+        }
+
+        $mahasiswa = DB::select("SELECT * FROM mahasiswa WHERE mhs_nim IN (" . implode(",", $temp) . ")");
+
+        $pembimbings = collect(DB::select("SELECT D.file_ttd, D.dosen_nama, B.* FROM bimbingans B JOIN dosen D ON B.dosen_nip = D.dosen_nip WHERE ta_id = " . $ta->ta_id));
+
+        $pembimbing = [];
+        $bimb_id = [];
+        $approve = "";
+        foreach ($pembimbings as $row) {
+            $bimb_id[] = $row->bimbingan_id;
+            $pembimbing[] = [
+                "nama" => $row->dosen_nama,
+                "nip" => $row->dosen_nip,
+                "ttd" => $row->file_ttd
+            ];
+        }
+        // dd($infoujian);
+
+        $tgl = DB::selectOne("SELECT MAX(bimb_tgl) tgl FROM bimbingan_log WHERE bimbingan_id IN (" . implode(",", $bimb_id) . ")");
+
+        $jenis = ["1" => "Tugas Akhir", "2" => "Skripsi"];
+
+        Carbon::setLocale('id');
+        // dd($noSk);
+        if (!$pembimbing[0]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[0]['ttd']))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[0]['nama']);
+        }
+
+        if (!$pembimbing[1]['ttd'] || !file_exists(public_path('dist/img/' . $pembimbing[1]['ttd']))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $pembimbing[1]['nama']);
+        }
+
+        if (!$infoujian->penguji1_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji1_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji1_nama);
+        }
+
+        if (!$infoujian->penguji2_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji2_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji2_nama);
+        }
+
+        if (!$infoujian->penguji3_ttd_path || !file_exists(public_path('dist/img/' . $infoujian->penguji3_ttd_path))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $infoujian->penguji3_nama);
+        }
+
+        if (!$noSk->file_ttd || !file_exists(public_path('dist/img/' . $noSk->file_ttd))) {
+            return redirect()->route('sidang-tugas-akhir')->with('error', 'File tanda tangan tidak ditemukan untuk dosen: ' . $noSk->nama_kajur);
+        }
+
+        $view = view("cetak-cetak.lembar-pengesahan", [
+            "jenis" => $jenis,
+            "prodi_id" => $prodi_id,
+            "prodi_nama" => $prodi->program_studi,
+            "mahasiswa" => $mahasiswa,
+            "judul_ta" => $infoujian->judul_final,
+            "tanggal_approve" => Carbon::now()->translatedFormat('j F Y'),
+            "pembimbing" => $pembimbing,
+            "infoujian" => $infoujian,
+            "infokajur" => $noSk,
+        ]);
+        
+        $mpdf = new MpdfMpdf();
+        $mpdf->WriteHTML($view);
+        $mpdf->SetProtection(['copy', 'print']);
+        $mpdf->showImageErrors = true;
+        $mpdf->Output('Lembar Pengesahan ' . ucwords(strtolower($mhs->mhs_nama)) . '.pdf', 'I');
+
+        //echo $view;
+    }
 }
