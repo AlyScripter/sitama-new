@@ -61,6 +61,15 @@ class MahasiswaBimbinganController extends Controller
         Carbon::setLocale('id');
         foreach ($bimbLog as $item) {
             $item->format_tanggal = Carbon::parse($item->bimb_tgl)->translatedFormat('l, j F Y');
+            
+            // Menambahkan URL download untuk setiap log
+            if (!empty($item->bimb_file)) {
+                // Enkripsi path file dan buat URL unduhan
+                $encryptedFilePath = encrypt(env('APP_FILE_DRAFT_TA_PATH') . $item->bimb_file);
+                $item->download_url = "stream-document/{$encryptedFilePath}?dl=0&filename={$item->bimb_file_original}";
+            } else {
+                $item->download_url = null; // Jika file tidak ada
+            }
         }
 
         $masterJumlah = DB::table('bimbingan_counts')->value('bimbingan_counts.total_bimbingan');
@@ -75,6 +84,7 @@ class MahasiswaBimbinganController extends Controller
             ]
         ]);
     }
+
 
     public function setujuiSidangAkhir(Request $request, $ta_id)
     {
