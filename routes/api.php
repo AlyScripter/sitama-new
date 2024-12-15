@@ -40,6 +40,7 @@ Route::prefix('v1')->group(function () {
         Route::get('stream-document/{enc_path}', [HomeController::class, 'streamDocument']);
 
         // Mahasiswa TA
+        Route::get('dashboard-mahasiswa/autocomplete', [DashboardMahasiswaController::class, 'autocomplete']);
         Route::resource('dashboard-mahasiswa', DashboardMahasiswaController::class);
 
         Route::get('bimbingan-mahasiswa/cetak-persetujuan-sidang', [BimbinganMahasiswaController::class, 'cetak_persetujuan_sidang'])->name('bimbingan-mahasiswa.cetak_persetujuan_sidang');
