@@ -49,8 +49,7 @@ class RevisiDosenController extends Controller
         try {
             // Validasi input
             $validator = Validator::make($request->all(), [
-                'file' => 'required|mimetypes:application/pdf|max:2048',
-                'deskripsi_array' => 'required',
+                'revisi_deskripsi' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -65,34 +64,20 @@ class RevisiDosenController extends Controller
             $fileName = null;
             $file_name_original = null;
 
-            // Proses file jika ada
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $fileName = date('Ymdhis') . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/draft_revisi', $fileName);
-                $file_name_original = $file->getClientOriginalName();
-            }
-
             // Ambil NIP dosen dari user yang login
             $userId = Auth::user()->id;
             $dosen_nip = User::with('dosen')->findOrFail($userId)->dosen->dosen_nip;
 
-            // Ambil deskripsi revisi dari input
-            $deskripsiArray = json_decode($request->get('deskripsi_array'), true);
-
             // Simpan setiap deskripsi revisi
             $createdRevisions = [];
-            foreach ($deskripsiArray as $deskripsiItem) {
-                $revisi = revisi_mahasiswa::create([
-                    'revisi_deskripsi' => $deskripsiItem,
-                    'revisi_file' => $fileName,
-                    'revisi_file_original' => $file_name_original,
-                    'revisi_status' => 0, // Status default
-                    'mhs_nim' => $mhs,
-                    'dosen_nip' => $dosen_nip,
-                ]);
-                $createdRevisions[] = $revisi;
-            }
+            $revisi = revisi_mahasiswa::create([
+                'revisi_deskripsi' => $request->revisi_deskripsi,
+                'revisi_status' => 0, // Status default
+                'mhs_nim' => $mhs,
+                'dosen_nip' => $dosen_nip,
+            ]);
+            $createdRevisions[] = $revisi;
+        
 
             // Kembalikan respons sukses
             return response()->json([

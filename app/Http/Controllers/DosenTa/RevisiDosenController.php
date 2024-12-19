@@ -47,22 +47,13 @@ class RevisiDosenController extends Controller
     public function store(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'file_name' => 'required|mimetypes:application/pdf|max:2048'
+            'deskripsi_array' => 'required',
         ]);
 
         // dd($id);
         $mhs = (int)$id;
         // $mhs = $mahasiswa->mhs_nim;
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = date('Ymdhis') . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/draft_revisi', $fileName);
-            $file_name_original = $file->getClientOriginalName();
-        } else {
-            $fileName = null;
-            $file_name_original = null;
-        }
 
         $revisi_status = 0;
 
@@ -75,8 +66,6 @@ class RevisiDosenController extends Controller
         foreach ($deskripsiArray as $deskripsiItem) {
             $revisi = revisi_mahasiswa::create([
                 'revisi_deskripsi' => $deskripsiItem,
-                'revisi_file' => $fileName,
-                'revisi_file_original' => $file_name_original,
                 'revisi_status' => $revisi_status,
                 'mhs_nim' => $mhs,
                 'dosen_nip' => $dosen_nip,

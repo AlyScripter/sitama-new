@@ -69,6 +69,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('mhsbimbingan', MahasiswaBimbinganController::class);
 
         Route::get('ujian-sidang/kelayakan/{ta_id}', [UjianSidangController::class, 'kelayakan'])->name('ujian-sidang.kelayakan');
+        Route::get('ujian-sidang/penguji/{ta_id}', [UjianSidangController::class, 'penguji'])->name('ujian-sidang.penguji');
         Route::post('/ujian-sidang/kelayakan/{ta_id}', [UjianSidangController::class, 'storeKelayakan'])->name('ujian-sidang.storeKelayakan');
         Route::post('/ujian-sidang/penguji/{ta_id}', [UjianSidangController::class, 'storePenguji'])->name('ujian-sidang.storePenguji');
         Route::get('ujian-sidang/cetak_surat_tugas/{id}', [UjianSidangController::class, 'CetakSuratTugas'])->name('ujian-sidang.CetakSuratTugas');

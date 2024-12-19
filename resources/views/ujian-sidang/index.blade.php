@@ -244,12 +244,14 @@
                                                                         title="Input Nilai Penguji">
                                                                         <i class="fas fa-edit"></i> Input Nilai
                                                                     </a>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ url('revisi-dosen', $item->mhs_nim) }}"
-                                                                        data-toggle="tooltip" data-placement="top"
-                                                                        title="Lihat Revisi">
-                                                                        <i class="fas fa-eye"></i> Lihat Revisi
-                                                                    </a>
+                                                                    @if($item->status_lulus == 2)
+                                                                        <a class="dropdown-item"
+                                                                            href="{{ url('revisi-dosen', $item->mhs_nim) }}"
+                                                                            data-toggle="tooltip" data-placement="top"
+                                                                            title="Lihat Revisi">
+                                                                            <i class="fas fa-eye"></i> Lihat Revisi
+                                                                        </a>
+                                                                    @endif
                                                                     <a class="dropdown-item" target="_blank"
                                                                         href="{{ route('ujian-sidang.CetakSuratTugas', $item->ta_id) }}">
                                                                         <i class="fas fa-file-pdf"></i> Cetak Surat Tugas

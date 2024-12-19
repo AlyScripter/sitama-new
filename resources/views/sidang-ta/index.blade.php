@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                     <div class="">
-                                        <a href="{{ url('/revisi-mahasiswa') }}" class="btn btn-primary">Daftar Revisi Sidang</a>
+                                        <a href="{{ url('/revisi-mahasiswa') }}" class="btn btn-primary">Revisi Sidang</a>
                                     </div>
                                 @elseif ($taSidang->status_lulus == 3)
                                     <div class="row">

@@ -157,7 +157,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('revisi-mahasiswa', RevisiMahasiswaController::class);
 
     Route::get('bimbingan-mahasiswa/cetak-persetujuan-sidang', [BimbinganMahasiswaController::class, 'cetak_persetujuan_sidang'])->name('bimbingan-mahasiswa.cetak_persetujuan_sidang');
-    Route::get('bimbingan-mahasiswa/cetak_lembar_kontrol/{id}/{sebagai}', [BimbinganMahasiswaController::class, 'CetakLembarKontrol'])->name('bimbingan-mahasiswa.CetakLembarKontrol');
+    Route::get('bimbingan-mahasiswa/cetak_lembar_kontrol/{id}/{sebagai}', [BimbinganMahasiswaController::class, ' '])->name('bimbingan-mahasiswa.CetakLembarKontrol');
     Route::resource('bimbingan-mahasiswa', BimbinganMahasiswaController::class);
 
     Route::get('daftar-tugas-akhir/{daftar_tugas_akhir}/upload', [DaftarTaController::class, 'upload'])->name('daftar-tugas-akhir.upload');
