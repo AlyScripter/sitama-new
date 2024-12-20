@@ -74,15 +74,24 @@ function nim2kelas($nim)
         }
 
         h1 {
-            font-size: 18px;
+            font-family: "Times New Roman", serif;
+            font-size: 14px;
         }
 
         h2 {
-            font-size: 16px;
+            font-family: "Times New Roman", serif;
+            font-size: 12px;
+        }
+
+        p {
+            font-family: "Times New Roman", serif;
+            font-size: 12px;
+            text-align: justify;
         }
 
         * {
-            font-size: 16px;
+            font-family: "Times New Roman", serif;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -113,40 +122,40 @@ function nim2kelas($nim)
             <tr>
                 <td align="center">
                     <br>
-                    Pembimbing I,<br>
+                    <p>Pembimbing I,</p><br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
                         height="72" width="150">
                     <br>
-                    {{ $pembimbing[0]['nama'] }}<br>
-                    NIP. {{ $pembimbing[0]['nip'] }}<br>
+                    <p>{{ $pembimbing[0]['nama'] }}<br>
+                    NIP. {{ $pembimbing[0]['nip'] }}</p><br>
                 </td>
                 <td align="center">
-                    Semarang, {{ $tanggal_approve }}<br>
-                    Pembimbing II,<br>
+                    <p>Semarang, {{ $tanggal_approve }}<br>
+                    Pembimbing II,</p><br>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $pembimbing[1]['ttd'] }}"
                         height="72" width="150">
                     <br>
-                    {{ $pembimbing[1]['nama'] }}<br>
-                    NIP. {{ $pembimbing[1]['nip'] }}<br>
+                    <p>{{ $pembimbing[1]['nama'] }}<br>
+                    NIP. {{ $pembimbing[1]['nip'] }}</p><br>
                 </td>
             </tr>
         </table>
         <table cellpadding="5" cellspacing="0" width="100%" style="margin-top:50px;">
             <tr>
                 <td align="center">
-                    Mengetahui<br>
-                    Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br>
+                    <p>Mengetahui<br>
+                    Ketua Program Studi S.Tr Teknologi Rekayasa Komputer<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infokajur->file_ttd }}"
                         height="72">
                     <br>
-                    {{ $infokajur->nama_kajur }}<br>
-                    NIP. {{ $infokajur->nip_kajur }}<br>
+                    <p>{{ $infokajur->nama_kajur }}<br>
+                    NIP. {{ $infokajur->nip_kajur }}<br></p>
                 </td>
             </tr>
         </table>
@@ -176,34 +185,34 @@ function nim2kelas($nim)
         <table cellpadding="5" cellspacing="0" width="100%">
             <tr>
                 <td align="center">
-                    Penguji I,<br>
+                    <p>Penguji I,<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infoujian->penguji1_ttd_path }}"
                         height="72" width="150">
                     <br>
-                    {{ $infoujian->penguji1_nama }}<br>
-                    NIP. {{ $infoujian->penguji1_nip }}<br>
+                    <p>{{ $infoujian->penguji1_nama }}<br>
+                    NIP. {{ $infoujian->penguji1_nip }}<br></p>
                 </td>
                 <td align="center">
-                    Penguji II,<br>
+                    <p>Penguji II,<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infoujian->penguji2_ttd_path }}"
                         height="72" width="150">
                     <br>
-                    {{ $infoujian->penguji2_nama }}<br>
-                    NIP. {{ $infoujian->penguji2_nip }}<br>
+                    <p>{{ $infoujian->penguji2_nama }}<br>
+                    NIP. {{ $infoujian->penguji2_nip }}<br></p>
                 </td>
                 <td align="center">
-                    Penguji III,<br>
+                    <p>Penguji III,<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infoujian->penguji3_ttd_path }}"
                         height="72" width="150">
                     <br>
-                    {{ $infoujian->penguji3_nama }}<br>
-                    NIP. {{ $infoujian->penguji3_nip }}<br>
+                    <p>{{ $infoujian->penguji3_nama }}<br>
+                    NIP. {{ $infoujian->penguji3_nip }}<br></p>
                 </td>
             </tr>
         </table>
@@ -211,39 +220,39 @@ function nim2kelas($nim)
             <tr>
                 <td align="center">
                     <br>
-                    Ketua,<br>
+                    <p>Ketua,<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[0]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $pembimbing[0]['ttd'] }}"
                         height="72" width="150">
                     <br>
-                    {{ $pembimbing[0]['nama'] }}<br>
-                    NIP. {{ $pembimbing[0]['nip'] }}<br>
+                    <p>{{ $pembimbing[0]['nama'] }}<br>
+                    NIP. {{ $pembimbing[0]['nip'] }}<br></p>
                 </td>
                 <td align="center">
-                    Sekretaris,<br>
+                    <p>Sekretaris,<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infoujian->sekretaris_ttd_path }}"
                         height="72" width="150">
                     <br>
-                    {{ $infoujian->sekretaris_nama }}<br>
-                    NIP. {{ $infoujian->sekretaris_nip }}<br>
+                    <p>{{ $infoujian->sekretaris_nama }}<br>
+                    NIP. {{ $infoujian->sekretaris_nip }}<br></p>
                 </td>
             </tr>
         </table>
         <table cellpadding="5" cellspacing="0" width="100%" style="margin-top:50px;">
             <tr>
                 <td align="center">
-                    Mengesahkan<br>
-                    Ketua Jurusan Teknik Elektro<br>
+                    <p>Mengesahkan<br>
+                    Ketua Jurusan Teknik Elektro<br></p>
                     <br>
                     <!-- <img src="https://sitama-elektro.polines.ac.id/dist/img/{{ $pembimbing[1]['ttd'] }}" -->
                     <img src="{{ asset('dist/img') . '/' . $infokajur->file_ttd }}"
                         height="72">
                     <br>
-                    {{ $infokajur->nama_kajur }}<br>
-                    NIP. {{ $infokajur->nip_kajur }}<br>
+                    <p>{{ $infokajur->nama_kajur }}<br>
+                    NIP. {{ $infokajur->nip_kajur }}<br></p>
                 </td>
             </tr>
         </table>
