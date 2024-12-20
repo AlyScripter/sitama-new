@@ -45,11 +45,11 @@ class DashboardMahasiswaController extends Controller
         $id = Auth::user()->id;
         $nim = Bimbingan::Mahasiswa($id)->mhs_nim;
         $dataTa = Ta::dataTa($id);
-
         $thnAkademik = DB::table('master_ta')->select('ta')->where('status', 1)->value('ta');
 
         try {
             if (!isset($dataTa)) {
+                // Buat satu entri TA
                 $insert = new Ta();
                 $insert->mhs_nim = $nim;
                 $insert->ta_judul = $request->judul_ta;
@@ -58,22 +58,35 @@ class DashboardMahasiswaController extends Controller
 
                 $ta_id = $insert->ta_id;
 
+                // Tambahkan mhs_nim utama ke tas_mahasiswa
                 DB::table('tas_mahasiswa')->insert([
                     "ta_id" => $ta_id,
                     "mhs_nim" => $nim
                 ]);
 
+                // Jika tim-id diisi, tambahkan mhs_nim tim ke tas_mahasiswa
                 if ($request->post('tim-id')) {
+                    $timId = $request->post('tim-id');
+
+                    // Pastikan tim-id tidak duplikat di tas_mahasiswa
+                    $existingEntry = DB::table('tas_mahasiswa')
+                        ->where('mhs_nim', $timId)
+                        ->where('ta_id', $ta_id)
+                        ->exists();
+
+                    if (!$existingEntry) {
+                        DB::table('tas_mahasiswa')->insert([
+                            "ta_id" => $ta_id,
+                            "mhs_nim" => $timId
+                        ]);
+                    }
+
+                    // Buat entri baru di tabel Ta untuk tim-id
                     $teamInsert = new Ta();
-                    $teamInsert->mhs_nim = $request->post('tim-id');
+                    $teamInsert->mhs_nim = $timId;
                     $teamInsert->ta_judul = $request->judul_ta;
                     $teamInsert->tahun_akademik = $thnAkademik;
                     $teamInsert->save();
-
-                    DB::table('tas_mahasiswa')->insert([
-                        "ta_id" => $teamInsert->ta_id,
-                        "mhs_nim" => $request->post('tim-id')
-                    ]);
                 }
 
                 return response()->json([
@@ -94,6 +107,7 @@ class DashboardMahasiswaController extends Controller
             ], 500);
         }
     }
+
 
     public function autocomplete()
     {
